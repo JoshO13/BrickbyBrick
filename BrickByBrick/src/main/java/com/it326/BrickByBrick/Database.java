@@ -2,7 +2,7 @@ import java.sql.*;
 
 public class Database {
     // Database URL syntax: jdbc:oracle:thin:@//host:port/service
-    private static final String URL = "jdbc:oracle:thin:@//localhost:1521/orclpdb";
+    private static final String URL = "jdbc:oracle:thin:@//localhost:1521/oracle";
     private static final String USER = "your_username";
     private static final String PASSWORD = "your_password";
 
