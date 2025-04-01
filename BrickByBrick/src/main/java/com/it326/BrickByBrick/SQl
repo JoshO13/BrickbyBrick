@@ -1,0 +1,37 @@
+CREATE DATABASE brickbybrick;
+
+USE brickbybrick;
+
+CREATE TABLE Account (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    isLoggedIn BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE Project (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    completed BOOLEAN DEFAULT FALSE,
+    accountId INT,
+    FOREIGN KEY (accountId) REFERENCES Account(id)
+);
+
+CREATE TABLE Task (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    taskName VARCHAR(100),
+    priorityLevel DOUBLE,
+    dueDate DATE,
+    completed BOOLEAN DEFAULT FALSE,
+    projectId INT,
+    FOREIGN KEY (projectId) REFERENCES Project(id)
+);
+
+CREATE TABLE JournalEntry (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    content TEXT,
+    date DATE,
+    feelingScale INT,
+    accountId INT,
+    FOREIGN KEY (accountId) REFERENCES Account(id)
+);
