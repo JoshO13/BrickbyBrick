@@ -1,14 +1,16 @@
 package com.it326.BrickByBrick;
 
+import java.util.List;
+
 public class ProjectManager {
 
-    private Database database;
+    private Database db;
+    private List<Project> projects;
 
-    public ProjectManager(Database database) {
-        this.database = database;
+    public ProjectManager() {
+        db = Database.getInstance();
     }
-
-    public Project createProjectInDatabase(){
+    public Project createProjectInDatabase(Project project){
         //TO-DO: implement this method
         //remove the below line when implemented
         return null;
