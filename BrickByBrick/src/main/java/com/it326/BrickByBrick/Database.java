@@ -4,6 +4,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Database {
+
+    // Singleton instance
+    private static Database dbInstance = null;
     // Replace with your Oracle DB details
     private static final String URL = "jdbc:oracle:thin:@10.110.10.90:1521:oracle";
     private static final String USER = "IT326T04";
@@ -18,5 +21,15 @@ public class Database {
             e.printStackTrace();
             throw new SQLException(e);
         }
+    }
+    /**
+     * Get the singleton instance of the Database class.
+     * @return the singleton instance
+     */
+    public static Database getInstance(){
+        if(dbInstance == null){
+            dbInstance = new Database();
+        }
+        return dbInstance;
     }
 }
