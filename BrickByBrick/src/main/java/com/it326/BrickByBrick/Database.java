@@ -1,35 +1,42 @@
 package com.it326.BrickByBrick;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class Database {
+public class Database{
 
-    // Singleton instance
-    private static Database dbInstance = null;
-    // Replace with your Oracle DB details
-    private static final String URL = "jdbc:oracle:thin:@10.110.10.90:1521:oracle";
-    private static final String USER = "IT326T04";
-    private static final String PASSWORD = "enemy96";
+    // Replace these with your actual Oracle DB details
+    private static final String DB_URL = "jdbc:oracle:thin:@10.110.10.90:1521:oracle";
+    private static final String DB_USER = "IT326T04";
+    private static final String DB_PASSWORD = "enemy96";
 
-    public static Connection getConnection() throws SQLException {
+    public static void main(String[] args) {
+        Connection connection = null;
         try {
+            // If needed (usually optional in modern Java), load the Oracle driver class
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            return DriverManager.getConnection(URL, USER, PASSWORD);
+            
+            // Establish the connection
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            System.out.println("Connection successful!");
+
         } catch (ClassNotFoundException e) {
-            System.out.println("Oracle JDBC Driver not found.");
+            System.err.println("Could not find the Oracle JDBC driver. Make sure ojdbc.jar is on the classpath.");
             e.printStackTrace();
-            throw new SQLException(e);
+        } catch (SQLException e) {
+            System.err.println("Database connection failed!");
+            e.printStackTrace();
+        } finally {
+            // Close the connection if it was successfully opened
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    // Ignore or handle accordingly
+                }
+            }
         }
-    }
-    /**
-     * Get the singleton instance of the Database class.
-     * @return the singleton instance
-     */
-    public static Database getInstance(){
-        if(dbInstance == null){
-            dbInstance = new Database();
-        }
-        return dbInstance;
     }
 }
+
