@@ -15,12 +15,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.oracle</groupId>
-      <artifactId>ojdbc8</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>d:/BrickbyBrick/lib/ojdbc8.jar</systemPath>
-    </dependency>
+    <groupId>com.oracle</groupId>
+    <artifactId>ojdbc8</artifactId>
+    <version>12.2.0.1</version>
+</dependency>
   </dependencies>
   <properties>
     <jdk.version>11</jdk.version>
