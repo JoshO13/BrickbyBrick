@@ -28,5 +28,18 @@ public class Task {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    public int getScore() {
+        return score;
+    }
+
+    public Date getDate(){
+        return date;
+    }
+
+    public String getName() {
+        return taskName;
+    }
+
     
 }
