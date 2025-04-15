@@ -2,7 +2,7 @@ package com.it326.BrickByBrick;
 
 import java.util.List;
 import java.util.Date;
-
+import java.sql.SQLException;
 public class Handler {
 
     private int score;
@@ -10,6 +10,11 @@ public class Handler {
     private List<Project> projects;
     private Database database;
     private AccountManager accountManager;
+
+    public Connection getDatabaseConnection() throws SQLException {
+        //return database.connection();
+        //implement when database instance available
+    }
 
     public boolean deleteTask(Task task) {
         //TO-DO: Implement this method
