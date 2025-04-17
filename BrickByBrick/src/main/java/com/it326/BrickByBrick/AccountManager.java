@@ -39,7 +39,7 @@ public class AccountManager implements Manager<Account> {
        }
        return null;
     }
-    //Logic to create an account in the database from an account object
+    //Logic to delete an account in the database from an account object
     public Account deleteAccountInDatabase(Account acc) {
         if (acc == null) {
             System.out.println("No account provided to delete.");

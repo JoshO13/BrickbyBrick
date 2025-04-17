@@ -44,22 +44,50 @@ public class Account {
     }
 
     public boolean changeUsername(String newUsername) {
-        //TO-DO: implement the changeUsername method
+        if (!isLoggedIn) {
+            return false;
+        }
+        if (accountManager != null) {
+            try (Connection conn = accountManager.getDatabaseConnection()) {
+                String sql = "UPDATE accounts SET login = ? WHERE login = ?";
+                PreparedStatement statement = conn.prepareStatement(sql);
+                statement.setString(1, newUsername);
+                statement.setString(2, login);
+                int rows = statement.executeUpdate();
+                if (rows > 0) {
+                    this.login = newUsername;
+                    return true;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
         return false;
     }
-
+    //Logic to log a user in
+    //Want to ensure login/logout functionality before introducing password hashing
     public boolean login(String username, String password) {
-        //TO-DO: implement the login method
+        if (this.login == username && this.password == password) {
+            isLoggedIn = true;
+            return true;
+        }
         return false;
     }
-
+    //Logic to log a user out
     public boolean logout() {
-        //TO-DO: implement the logout method
+        if (isLoggedIn) {
+            isLoggedIn = false;
+            return true;
+        }
         return false;
     }
-
+    //Logic to request the manager to delete the account
     public boolean deleteAccount() {
-        //TO-DO: implement the deleteAccount method
+        if (accountManager != null) {
+            Account deletedAcc = accountManager.deleteAccountInDatabase(this);
+            return deletedAcc != null;
+        }
         return false;
     }
     public String getLogin() {
