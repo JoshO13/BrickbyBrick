@@ -37,4 +37,8 @@ public class Account {
         return false;
     }
 
+    public void setTotalScore(int score) {
+        this.totalScore += score;
+    }
+
 }

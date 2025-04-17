@@ -21,4 +21,7 @@ public class AccountManager {
         return null;
     }
     
+    public Account geAccount() {
+        return account;
+    }
 }

@@ -41,5 +41,12 @@ public class Task {
         return taskName;
     }
 
+    public double getPriorityLevel() {
+        return priorityLevel;
+    }
+    public int getDifficultyLevel() {
+        return difficultyLevel;
+    }
+
     
 }
