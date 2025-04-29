@@ -1,28 +1,25 @@
 package com.it326.BrickByBrick;
 import java.util.Date;
 //Task class
-public class Task {
+public class Task implements Cloneable{
 
     private String taskName;
-    private double priorityLevel;
+    private int priorityLevel;
     private Date date;
     private int score;
-    private int difficultyLevel;
-    private Handler handler;
     private TaskManager taskManager;
     private TaskSuggester taskSuggester;
 
-    public Task(String taskName, double priorityLevel, Date date, int score, int difficultyLevel) {
+    public Task(String taskName, int priorityLevel, Date date, int score) {
         this.taskName = taskName;
         this.priorityLevel = priorityLevel;
         this.date = date;
         this.score = score;
-        this.difficultyLevel = difficultyLevel;
     }
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
-    public void setPriorityLevel(double priorityLevel) {
+    public void setPriorityLevel(int priorityLevel) {
         this.priorityLevel = priorityLevel;
     }
     public void setDate(Date date) {
@@ -39,6 +36,15 @@ public class Task {
 
     public String getName() {
         return taskName;
+    }
+
+    public int getPriorityLevel() {
+        return priorityLevel;
+    }
+    @Override
+    public Task clone(Task task) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'clone'");
     }
 
     
