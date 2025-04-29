@@ -3,11 +3,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+
+import oracle.jdbc.driver.parser.util.Array;
 public class TaskManager {
 
     //data members
     private Database db;
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<Task>();
 
     //Constructor
     public TaskManager() {
