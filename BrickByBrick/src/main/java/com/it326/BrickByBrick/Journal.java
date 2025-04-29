@@ -20,6 +20,11 @@ public class Journal {
         entries.add(newEntry);
     }
 
+    public void addEntry(Entry entry){
+        Entry newEntry = new Entry(entry.getContent(),entry.getFeeling(),entry.getDate());
+        entries.add(newEntry);
+    }
+
     /**
      * Deletes a specific Entry from the journal if it exists.
      */
