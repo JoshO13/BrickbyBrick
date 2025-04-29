@@ -1,24 +1,24 @@
 package com.it326.BrickByBrick;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 public class JournalTest {
 
     private Journal journal;
 
-    @BeforeEach
+    @Before
     public void setUp() {
         journal = new Journal();
     }
 
-    @AfterEach
+    @After
     public void clean_up(){
         journal = null;
     }
@@ -89,8 +89,8 @@ public class JournalTest {
 
         // Bypass addEntry and inject manually
         journal.getEntriesByDate(LocalDate.now()).clear(); // avoid conflict
-        journal.getEntriesByDate(pastDate).add(past1);
-        journal.getEntriesByDate(pastDate).add(past2);
+        journal.addEntry(past1);
+        journal.addEntry(past2);
 
         journal.combineAllPastEntries();
 
