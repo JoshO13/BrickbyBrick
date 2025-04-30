@@ -136,6 +136,7 @@ public class TaskManager {
         }
         return result;
     }
+}
 
     public Task filterByPriority(int priority){
          List<Task> result = new ArrayList<>();
