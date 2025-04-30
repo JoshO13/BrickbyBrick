@@ -127,12 +127,24 @@ public class TaskManager {
      * @return
      */
     public Task filterByDate(Date date){
-        //TO-DO: Implement this method
-        return null;
+        public List<Task> filterByDate(Date date){
+        List<Task> result = new ArrayList<>();
+        for(Task t : tasks){
+            if(t.getDate().equals(date)){
+                result.add(t);
+            }
+        }
+        return result;
     }
 
     public Task filterByPriority(int priority){
-        //TO-DO: Implement this method
+         List<Task> result = new ArrayList<>();
+        for(Task t : tasks){
+            if(t.getPriorityLevel() == priority){
+                result.add(t);
+            }
+        }
+        return result;
         return null;
     }
 
