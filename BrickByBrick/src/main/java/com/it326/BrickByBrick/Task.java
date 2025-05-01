@@ -10,10 +10,10 @@ public class Task implements Cloneable{
     private TaskManager taskManager;
     private TaskSuggester taskSuggester;
 
-    public Task(String taskName, int priorityLevel, Date date, int score) {
+    public Task(String taskName, Date date, int priorityLevel, int score) {
         this.taskName = taskName;
-        this.priorityLevel = priorityLevel;
         this.date = date;
+        this.priorityLevel = priorityLevel;
         this.score = score;
     }
     public void setTaskName(String taskName) {
