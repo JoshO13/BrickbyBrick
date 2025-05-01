@@ -11,15 +11,11 @@ public class ProjectManager implements Manager<Project> {
 
     private Database db;
     private List<Project> projects = new ArrayList<>();
-    private Handler handler;
-    public ProjectManager(Handler handler) {
-        this.handler = handler;
+    
+    public ProjectManager() {
     }
-    public Connection getDatabaseConnection() throws SQLException {
-        return handler.getDatabaseConnection();
-    }
-    public Project createProjectInDatabase(Project project){
-       try (Connection conn = getDatabaseConnection()) {
+    public Project createInDatabase(Project project){
+       try (Connection conn = db.getConnection()){
            String sql = "INSERT INTO projects (name, is_completed) VALUES (?, ?)";
            PreparedStatement statement = conn.prepareStatement(sql);
            statement.setString(1, project.getName());
@@ -36,13 +32,14 @@ public class ProjectManager implements Manager<Project> {
         return null;
     }
 
-    public Project deleteProjectFromDatabase(Project project){
+    public Project deleteInDatabase(Project project){
         //TO-DO: implement this method
         //remove the below line when implemented
         return null;
     }
     public List<Project> getAllProjects() {
         //return all projects
+        return projects;
     }
      /**
      * Create project and add to list

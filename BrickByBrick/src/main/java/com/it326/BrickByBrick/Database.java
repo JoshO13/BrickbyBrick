@@ -1,8 +1,11 @@
 package com.it326.BrickByBrick;
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import javax.xml.crypto.Data;
 
 public class Database{
 
@@ -10,7 +13,18 @@ public class Database{
     private static final String DB_URL = "jdbc:oracle:thin:@10.110.10.90:1521:oracle";
     private static final String DB_USER = "IT326T04";
     private static final String DB_PASSWORD = "enemy96";
+    private Connection connection = null;
+    public Database() throws SQLException {
+        this.connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        }
+    
+    public Connection getConnection(){
+        return this.connection;
+    }
 
+    public void close() throws SQLException{
+        this.connection.close();
+    }
     public static void main(String[] args) {
         Connection connection = null;
         try {
