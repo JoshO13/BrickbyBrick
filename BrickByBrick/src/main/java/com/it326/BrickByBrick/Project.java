@@ -8,7 +8,7 @@ public class Project{
     private boolean isCompleted;
     private ProjectManager projectManager;
 
-    public Project(String name, List<Task> taskList) {
+    public Project(String name) {
         this.name = name;
         this.taskList = taskList;
         this.isCompleted = false;
