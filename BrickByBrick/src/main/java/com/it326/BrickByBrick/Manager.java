@@ -6,19 +6,19 @@ public interface Manager<T> {
      * 
      * @param object
      */
-    public void createInDatabase(T object);
+    public boolean createInDatabase(T object);
 
     /**
      * delete object in database
      * 
      * @param object
      */
-    public void deleteInDatabase(T object);
+    public boolean deleteInDatabase(T object);
 
     /**
      * edit object in database
      * 
      * @param object
      */
-    public void editInDatabase(T object);
+    public boolean editInDatabase(T object);
 }

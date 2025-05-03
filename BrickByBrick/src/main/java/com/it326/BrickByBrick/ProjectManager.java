@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ProjectManager implements Manager<Project> {
 
@@ -27,15 +28,17 @@ public class ProjectManager implements Manager<Project> {
      * 
      * @param project
      */
-    public void createInDatabase(Project project) {
+    public boolean createInDatabase(Project project) {
         try (Connection conn = db.getConnection()) {
             String sql = "INSERT INTO project (name) VALUES (?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, project.getName());
             db.pushProjectQuery(statement);
-            db.close();
+            conn.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -44,15 +47,17 @@ public class ProjectManager implements Manager<Project> {
      * 
      * @return
      */
-    public void deleteInDatabase(Project project) {
+    public boolean deleteInDatabase(Project project) {
         try (Connection conn = db.getConnection()) {
-            String sql = "DELETE FROM PROJECT (name) WHERE (?)";
+            String sql = "DELETE FROM PROJECT WHERE name = (?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, project.getName());
             db.pushProjectQuery(statement);
-            db.close();
+            conn.close();
+            return true;
         } catch (SQLException exception) {
             exception.printStackTrace();
+            return false;
         }
     }
 
@@ -62,17 +67,19 @@ public class ProjectManager implements Manager<Project> {
      * 
      * @param project
      */
-    public void editInDatabase(Project project) {
+    public boolean editInDatabase(Project project) {
         String newName = project.getName();
         try (Connection conn = db.getConnection()) {
-            String sql = "UPDATE SET (name) = (?) WHERE (?)";
+            String sql = "UPDATE project SET (name) = (?) WHERE name = (?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, newName);
             statement.setString(2, oldName);
             db.pushProjectQuery(statement);
-            db.close();
+            conn.close();
+            return true;
         } catch (SQLException exception) {
             exception.printStackTrace();
+            return false;
         }
     }
 
@@ -97,9 +104,11 @@ public class ProjectManager implements Manager<Project> {
      * @param project
      */
     public void deleteProject(Project project) {
-        for (Project p : projects) {
+        Iterator<Project> iterator = projects.iterator();
+        while (iterator.hasNext()) {
+            Project p = iterator.next();
             if (p.getName().equals(project.getName())) {
-                projects.remove(p);
+                iterator.remove();
                 deleteInDatabase(project);
                 System.out.println("Project deleted.");
                 break;
@@ -121,30 +130,25 @@ public class ProjectManager implements Manager<Project> {
         System.out.println("2. Exit");
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
-        // if choice is integer
-        if ((Integer) choice instanceof Integer) {
-            switch (choice) {
-                // edit name
-                case 1:
-                    System.out.println("Enter new name: ");
-                    String newName = scanner.next();
-                    project.setName(newName);
-                    break;
-                // exit
-                case 2:
-                    System.out.println("Exiting");
-                    break;
-                // invalid
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-                    break;
-            }
-        } else {
-            System.out.println("Enter a number (1,2,etc)");
+        switch (choice) {
+            // edit name
+            case 1:
+                System.out.println("Enter new name: ");
+                String newName = scanner.next();
+                project.setName(newName);
+                break;
+            // exit
+            case 2:
+                System.out.println("Exiting");
+                break;
+            // invalid
+            default:
+                System.out.println("Invalid choice. Please try again.");
+                break;
         }
-        editInDatabase(project);
         scanner.close();
-
     }
+
+    
 
 }
