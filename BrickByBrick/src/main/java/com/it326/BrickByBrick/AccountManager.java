@@ -99,11 +99,57 @@ public class AccountManager implements Manager<Account> {
         return ok;
     }
 
-
-
-
-
-
-
     
+    /**
+     * Updates an existing entry to the current state
+     * @param entry - Entry to be updated
+     * @return bool - whether the changes were successfully pushed or not
+     */
+    public boolean createEntryInDatabase(Entry entry) {
+        if (entry == null) {
+            return false;
+        }
+        String sql = String.format(
+            "INSERT INTO ENTRY (text_string, entry_date, feeeling, username_e) " +
+            "VALUES ('%s', '%s', %d, '%s')",
+            entry.getContent(), entry.getDate(), entry.getFeeling(), account.getLogin()
+        );
+        boolean ok = database.pushEntryQuery(sql);
+        if (ok) {
+            this.entry = entry;
+        }
+        return ok;
+    }
+
+
+    /**
+     * Deletes an existing entry 
+     * @param entry - Entry to be deleted
+     * @return bool - whether the changes were successfully pushed or not
+     */
+    public boolean deleteEntryInDatabase(Entry entry) {
+        if (entry == null) {
+            return false;
+        }
+        String sql = String.format(
+            "DELETE FROM ENTRY WHERE text_string='%s'",
+            entry.getContent()
+        );
+        boolean ok = database.pushEntryQuery(sql);
+        if (ok && this.entry == entry) {
+            this.entry = null;
+        }
+        return ok;
+    }
+
+    /**
+     * Edits an existing entry 
+     * @param entry - Entry to be changed
+     * @return bool - whether the changes were successfully pushed or not
+     */
+    public boolean editEntryInDatabase(Entry entry) {
+        booolean ok = deleteEntryInDatabase(entry);
+        ok  = createEntryInDatabase(entry);
+        return ok;
+    }  
 }
