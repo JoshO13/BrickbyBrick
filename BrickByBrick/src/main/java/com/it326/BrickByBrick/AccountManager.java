@@ -105,7 +105,7 @@ public class AccountManager implements Manager<Account> {
      * @param entry - Entry to be updated
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean createEntryInDatabase(Entry entry) {
+    public boolean createInDatabase(Entry entry) {
         try (Connection conn = db.getConnection()) {
             String sql = "INSERT INTO ENTRY (text_string, entry_date, feeeling, username_e) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -128,7 +128,7 @@ public class AccountManager implements Manager<Account> {
      * @param entry - Entry to be deleted
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean deleteEntryInDatabase(Entry entry) {
+    public boolean deleteInDatabase(Entry entry) {
         try (Connection conn = db.getConnection()) {
             String sql = "DELETE FROM ENTRY WHERE text_string = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -148,7 +148,7 @@ public class AccountManager implements Manager<Account> {
      * @param entry - Entry to be changed
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean editEntryInDatabase(Entry entry) {
+    public boolean editInDatabase(Entry entry) {
         booolean ok = deleteEntryInDatabase(entry);
         ok  = createEntryInDatabase(entry);
         return ok;
