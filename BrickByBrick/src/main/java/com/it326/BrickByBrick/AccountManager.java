@@ -1,66 +1,96 @@
 package com.it326.BrickByBrick;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+
 import java.sql.SQLException;
 //Account Handler Interface
 
 
 public class AccountManager implements Manager<Account> {
     private Account account;
-    private Handler handler;
+    private Database database;
+    private Controller controller;
 
-    public AccountManager(Handler handler) {
-       this.handler = handler;
+    public AccountManager(Controller controller) {
+       this.controller = controller;
+       this.database = Database.getDatabase();
     }
-    //obtain db connection through the handler
-    public Connection getDatabaseConnection() throws SQLException {
-        return handler.getDatabaseConnection();
-    }
-    //Logic to create an account in the database from an account object
-    public Account createAccountInDatabase(Account acc) {
-       if (acc == null) {
-           System.out.println("No account provided to create.");
-           return null;
-       }
-       try (Connection conn = getDatabaseConnection()) {
-           String sql = "INSERT INTO accounts (username, password, is_logged_in) VALUES (?, ?, ?)"
-           PreparedStatement statement = conn.prepareStatement(sql);
-           statement.setString(1, acc.getLogin());
-           statement.setString(2, acc.getPassword());
-           //cont
-           int rows = statement.executeUpdate();
-           if (rows > 0) {
-               this.account = acc;
-               acc.setAccountManager(this);
-               return acc;
-           }
-       } catch (SQLException e) {
-           e.printStackTrace();
-       }
-       return null;
-    }
-    //Logic to delete an account in the database from an account object
-    public Account deleteAccountInDatabase(Account acc) {
+
+    /**
+     * Inserts a new account in the database
+     * @param acc - account to be added
+     * @return bool - whether the account was created (true) or not (false)
+     */
+    public boolean createInDatabase(Account acc) {
         if (acc == null) {
-            System.out.println("No account provided to delete.");
-            return null;
+            return false;
         }
-        try (Connection conn = getDatabaseConnection()) {
-            String sql = "DELETE FROM accounts WHERE login = ?";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            stmt.setString(1, acc.getLogin());
-            int rows = statement.executeUpdate();
-            if (rows > 0) {
-                Account deleted = acc;
-                if (this.account == acc) {
-                    this.account = null;
-                }
-                return deleted;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        String sql = String.format("INSERT INTO accounts (username,password,is_logged_in) " + "Values ('%s','%s',%b)",
+                acc.getLogin(), acc.getPassword(), acc.isLoggedIn());
+        boolean ok = database.pushAccountQuery(sql);
+        if (ok) {
+            this.account = acc;
+            acc.setAccountManager(this);
         }
-        return null;
+        return ok;
     }
+
+    /**
+     * Deletes an existing account in the database
+     * @param acc - account to be deleted
+     * @return bool - whether the account was deleted (true) or not (false)
+     */
+    public boolean deleteInDatabase(Account acc) {
+        if (acc == null) {
+            return false;
+        }
+        String sql = String.format("DELETE FROM accounts WHERE username='%s'", acc.getUsername());
+        boolean ok = database.pushAccountQuery(sql);
+        if (ok && this.account = acc) {
+            this.account = null;
+        }
+        return ok;
+    }
+
+    /**
+     * Updates an existing account to the current state
+     * @param acc - Account to be updated
+     * @return bool - whether the changes were successfully pushed or not
+     */
+    public boolean editInDatabase(Account acc) {
+        if (acc == null) {
+            return false;
+        }
+        String sql = String.format("UPDATE accounts SET password='%s',is_logged_in=%b " + "WHERE username='%s'", acc.getPassword(), acc.isLoggedIn(), acc.getLogin());
+        return database.pushAccountQuery(sql);
+    }
+
+    public boolean editAccountPassword(Account acc, String newPassword) {
+        if (acc == null) {
+            return false;
+        }
+        String sql = String.format("UPDATE accounts SET password='%s' WHERE username='%s'", newPassword, acc.getLogin());
+        boolean ok = database.pushAccountQuery(sql);
+        if (ok) {
+            acc.setPassword(newPassword);
+        }
+        return ok;
+    }
+    public boolean editAccountUsername(Account acc, String newUsername) {
+        if (acc == null) {
+            return false;
+        }
+        String sql = String.format("UPDATE accounts SET username='%s' WHERE username='%s'", newUsername, acc.getLogin());
+        boolean ok = database.pushAccountQuery(sql);
+        if (ok) {
+            acc.setLogin(newUsername);
+        }
+        return ok;
+    }
+
+
+
+
+
+
+
     
 }
