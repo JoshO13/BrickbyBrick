@@ -106,21 +106,22 @@ public class AccountManager implements Manager<Account> {
      * @return bool - whether the changes were successfully pushed or not
      */
     public boolean createEntryInDatabase(Entry entry) {
-        if (entry == null) {
+        try (Connection conn = db.getConnection()) {
+            String sql = "INSERT INTO ENTRY (text_string, entry_date, feeeling, username_e) VALUES (?, ?, ?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, entry.getContent());
+            statement.setDate(2, java.sql.Date.valueOf(entry.getDate()));
+            statement.setInt(3, entry.getFeeling());
+            statement.setString(4, account.getLogin());
+        
+            db.pushEntryQuery(statement);
+            conn.close();
+            return true;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
             return false;
         }
-        String sql = String.format(
-            "INSERT INTO ENTRY (text_string, entry_date, feeeling, username_e) " +
-            "VALUES ('%s', '%s', %d, '%s')",
-            entry.getContent(), entry.getDate(), entry.getFeeling(), account.getLogin()
-        );
-        boolean ok = database.pushEntryQuery(sql);
-        if (ok) {
-            this.entry = entry;
-        }
-        return ok;
     }
-
 
     /**
      * Deletes an existing entry 
@@ -128,19 +129,19 @@ public class AccountManager implements Manager<Account> {
      * @return bool - whether the changes were successfully pushed or not
      */
     public boolean deleteEntryInDatabase(Entry entry) {
-        if (entry == null) {
+        try (Connection conn = db.getConnection()) {
+            String sql = "DELETE FROM ENTRY WHERE text_string = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, entry.getContent());
+            db.pushEntryQuery(statement);
+            conn.close();
+            return true;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
             return false;
         }
-        String sql = String.format(
-            "DELETE FROM ENTRY WHERE text_string='%s'",
-            entry.getContent()
-        );
-        boolean ok = database.pushEntryQuery(sql);
-        if (ok && this.entry == entry) {
-            this.entry = null;
-        }
-        return ok;
     }
+
 
     /**
      * Edits an existing entry 
