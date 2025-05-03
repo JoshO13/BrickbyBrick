@@ -63,6 +63,12 @@ public class AccountManager implements Manager<Account> {
         return database.pushAccountQuery(sql);
     }
 
+    /**
+     * Updates an account password in the database
+     * @param acc - account to be updated
+     * @param newPassword - new password
+     * @return bool - whether the password was updated or not
+     */
     public boolean editAccountPassword(Account acc, String newPassword) {
         if (acc == null) {
             return false;
@@ -74,6 +80,13 @@ public class AccountManager implements Manager<Account> {
         }
         return ok;
     }
+
+    /**
+     * Updates an account username in the database
+     * @param acc - account to be updated
+     * @param newUsername - new username
+     * @return bool - whether the username was updated or not
+     */
     public boolean editAccountUsername(Account acc, String newUsername) {
         if (acc == null) {
             return false;
