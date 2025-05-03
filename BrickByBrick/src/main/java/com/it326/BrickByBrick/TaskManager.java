@@ -54,9 +54,19 @@ public class TaskManager {
      * 
      * @return
      */
-    Task deleteTaskInDatabase() {
+    public boolean deleteTaskInDatabase() {
         // TO-DO: delete a task in the database
-        return null;
+        String sql = "DELETE FROM TASK WHERE name = (?)";
+
+        try (Connection conn = db.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, project.getName());
+            db.pushProjectQuery(statement);
+            conn.close();
+            return true;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -68,11 +78,11 @@ public class TaskManager {
      * @param score
      * @param difficultyLevel
      */
-    public Task createTask(String name, Date date, int priorityLevel, int score) {
+    public boolean createTask(String name, Date date, int priorityLevel, int score) {
         Task task = new Task(name, date, priorityLevel, score);
         tasks.add(task);
         System.out.println("Task created.");
-        return task;
+        return true;
     }
 
     /**
