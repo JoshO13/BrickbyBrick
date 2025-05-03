@@ -21,53 +21,56 @@ public class Database {
         this.connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
-    public static Database getInstance() throws SQLException {
-        try {
+    public static synchronized Database getInstance() throws SQLException {
             if (database == null) {
                 database = new Database();
-                return database;
             }
-        } catch (SQLException exception) {
-            System.out.println("Error creating database instance");
-            exception.getMessage();
-        }
-        return null;
+                return database;
+            
+        
     }
 
-    public Connection getConnection() {
-        return this.connection;
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
     public void close() throws SQLException {
         this.connection.close();
     }
 
-    public void pushTaskQuery(PreparedStatement statement) {
+    public boolean pushTaskQuery(PreparedStatement statement) {
 
         try {
             statement.executeUpdate();
+            return true;
         } catch (SQLException exception) {
             System.out.println("Updating task in database failed");
             exception.getMessage();
+            return false;
         }
 
     }
 
-    public void pushProjectQuery(PreparedStatement statement) {
+    public boolean pushProjectQuery(PreparedStatement statement) {
         try {
             statement.executeUpdate();
+            statement = null;
+            return true;
         } catch (SQLException exception) {
             System.out.println("Updating Project failed");
-            exception.getMessage();
+            exception.printStackTrace();
+            return false;
         }
     }
 
-    public void pushAccountQuery(PreparedStatement statement) {
+    public boolean pushAccountQuery(PreparedStatement statement) {
         try {
             statement.executeUpdate();
+            return true;
         } catch (SQLException exception) {
             System.out.println("Updating account failed");
-            exception.getMessage();
+            exception.printStackTrace();
+            return false;
         }
     }
 
@@ -102,19 +105,20 @@ public class Database {
         return null;
     }
 
-    public Project retrieveProjectQuery(String sqlStatement) {
+    public Project retrieveProjectQuery(PreparedStatement sqlStatement) {
+        Project retrievedProject= null;
         try {
             Statement stmnt = connection.createStatement();
-            ResultSet rs = stmnt.executeQuery(sqlStatement);
+            ResultSet rs = sqlStatement.executeQuery();
             if (rs.next()) {
                 String name = rs.getString("project_name");
-                String username = rs.getString("username");
-                Project retrievedProject = new Project(name);
-                return retrievedProject;
+                String username = rs.getString("username_p");
+                retrievedProject = new Project(name);
             }
+            return retrievedProject;
         } catch (SQLException exception) {
             System.out.println("Retrieving Project failed");
-            exception.getMessage();
+            exception.printStackTrace();
         }
         return null;
     }

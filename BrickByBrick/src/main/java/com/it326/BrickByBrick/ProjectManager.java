@@ -13,6 +13,7 @@ public class ProjectManager implements Manager<Project> {
     private Database db;
     private List<Project> projects = new ArrayList<>();
     private String oldName;
+    private Account acc;
 
     /**
      * Constructor; initialized database
@@ -20,7 +21,7 @@ public class ProjectManager implements Manager<Project> {
      * @throws SQLException
      */
     public ProjectManager() throws SQLException {
-        db = Database.getInstance();
+        this.db = Database.getInstance();
     }
 
     /**
@@ -28,18 +29,22 @@ public class ProjectManager implements Manager<Project> {
      * 
      * @param project
      */
-    public boolean createInDatabase(Project project) {
+    public boolean createInDatabaseTest(Project project, Account account) {
         try (Connection conn = db.getConnection()) {
-            String sql = "INSERT INTO project (name) VALUES (?)";
+            String sql = "INSERT INTO project (username_p, project_name) VALUES (?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, project.getName());
+            statement.setString(1, account.getLogin());
+            statement.setString(2, project.getName());
             db.pushProjectQuery(statement);
-            conn.close();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean createInDatabase(Project project){
+        return false;
     }
 
     /**
@@ -49,11 +54,10 @@ public class ProjectManager implements Manager<Project> {
      */
     public boolean deleteInDatabase(Project project) {
         try (Connection conn = db.getConnection()) {
-            String sql = "DELETE FROM PROJECT WHERE name = (?)";
+            String sql = "DELETE FROM PROJECT WHERE project_name = (?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, project.getName());
             db.pushProjectQuery(statement);
-            conn.close();
             return true;
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -70,7 +74,7 @@ public class ProjectManager implements Manager<Project> {
     public boolean editInDatabase(Project project) {
         String newName = project.getName();
         try (Connection conn = db.getConnection()) {
-            String sql = "UPDATE project SET (name) = (?) WHERE name = (?)";
+            String sql = "UPDATE project SET (project_name) = (?) WHERE project_name = (?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, newName);
             statement.setString(2, oldName);
@@ -83,6 +87,19 @@ public class ProjectManager implements Manager<Project> {
         }
     }
 
+    public Project retrieveProject(String retrieveName){
+        try(Connection conn = db.getConnection()){
+            String sql = "SELECT * FROM project WHERE (project_name) = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, retrieveName);
+            Project project = db.retrieveProjectQuery(statement);
+            return project;
+        }catch(SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
     /**
      * Create project and add to list
      * 
@@ -91,11 +108,16 @@ public class ProjectManager implements Manager<Project> {
      * @param taskList
      * @param isCompleted
      */
-    public void createProject(String name) {
+    public void createProject(String name, Account account) {
         Project project = new Project(name);
         projects.add(project);
-        createInDatabase(project);
-        System.out.println("Project created.");
+        System.out.println(projects.toString());
+        boolean flag = createInDatabaseTest(project,account);
+        if(flag)
+            System.out.println("Project created.");
+        else{
+            System.out.println("Creating project in database failed");
+        }
     }
 
     /**

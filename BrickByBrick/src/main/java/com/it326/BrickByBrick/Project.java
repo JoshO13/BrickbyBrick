@@ -7,6 +7,7 @@ public class Project{
     private List<Task> taskList;
     private boolean isCompleted;
     private ProjectManager projectManager;
+    private Account acc;
 
     public Project(String name) {
         this.name = name;

@@ -8,11 +8,11 @@ import java.sql.SQLException;
 public class AccountManager implements Manager<Account> {
     private Account account;
     private Database database;
-    private Controller controller;
+   // private Controller controller;
 
-    public AccountManager(Controller controller) {
-        this.controller = controller;
-        this.database = Database.getDatabase();
+    public AccountManager() throws SQLException{
+       // this.controller = controller;
+        this.database = Database.getInstance();
     }
 
     /**
@@ -24,12 +24,13 @@ public class AccountManager implements Manager<Account> {
         if (acc == null) {
             return false;
         }
-        String sql = "INSERT INTO accounts (username, password, total_score) " +
-                "VALUES (?, ?, ?)";
-        try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
+        String sql = "INSERT INTO account (username, password1, original_score, total_score) VALUES (?, ?, ?, ?)";
+        try (Connection conn = database.getConnection()){
+             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, acc.getLogin());
             statement.setString(2, acc.getPassword());
-            statement.setInt(3, acc.getTotalScore());
+            statement.setInt(3, 0);
+            statement.setInt(4, acc.getTotalScore());
             boolean ok = database.pushAccountQuery(statement);
             if (ok) {
                 this.account = acc;
@@ -129,7 +130,7 @@ public class AccountManager implements Manager<Account> {
      * @param entry - Entry to be updated
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean createEntryInDatabase(Entry entry) {
+    public boolean createInDatabase(Entry entry) {
         try (Connection conn = db.getConnection()) {
             String sql = "INSERT INTO ENTRY (text_string, entry_date, feeeling, username_e) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -152,7 +153,7 @@ public class AccountManager implements Manager<Account> {
      * @param entry - Entry to be deleted
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean deleteEntryInDatabase(Entry entry) {
+    public boolean deleteInDatabase(Entry entry) {
         try (Connection conn = db.getConnection()) {
             String sql = "DELETE FROM ENTRY WHERE text_string = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -172,7 +173,7 @@ public class AccountManager implements Manager<Account> {
      * @param entry - Entry to be changed
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean editEntryInDatabase(Entry entry) {
+    public boolean editInDatabase(Entry entry) {
         booolean ok = deleteEntryInDatabase(entry);
         ok  = createEntryInDatabase(entry);
         return ok;
