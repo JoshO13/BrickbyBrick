@@ -29,7 +29,7 @@ public class AccountManager implements Manager<Account> {
         try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, acc.getLogin());
             statement.setString(2, acc.getPassword());
-            statement.setString(3, acc.getTotalScore());
+            statement.setInt(3, acc.getTotalScore());
             boolean ok = database.pushAccountQuery(statement);
             if (ok) {
                 this.account = acc;
