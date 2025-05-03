@@ -10,8 +10,8 @@ public class AccountManager implements Manager<Account> {
     private Controller controller;
 
     public AccountManager(Controller controller) {
-       this.controller = controller;
-       this.database = Database.getDatabase();
+        this.controller = controller;
+        this.database = Database.getDatabase();
     }
 
     /**
@@ -23,14 +23,22 @@ public class AccountManager implements Manager<Account> {
         if (acc == null) {
             return false;
         }
-        String sql = String.format("INSERT INTO accounts (username,password,is_logged_in) " + "Values ('%s','%s',%b)",
-                acc.getLogin(), acc.getPassword(), acc.isLoggedIn());
-        boolean ok = database.pushAccountQuery(sql);
-        if (ok) {
-            this.account = acc;
-            acc.setAccountManager(this);
+        String sql = "INSERT INTO accounts (username, password, total_score) " +
+                "VALUES (?, ?, ?)";
+        try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, acc.getLogin());
+            statement.setString(2, acc.getPassword());
+            statement.setString(3, acc.getTotalScore());
+            boolean ok = database.pushAccountQuery(statement);
+            if (ok) {
+                this.account = acc;
+                acc.setAccountManager(this);
+            }
+            return ok;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return ok;
     }
 
     /**
@@ -42,12 +50,18 @@ public class AccountManager implements Manager<Account> {
         if (acc == null) {
             return false;
         }
-        String sql = String.format("DELETE FROM accounts WHERE username='%s'", acc.getUsername());
-        boolean ok = database.pushAccountQuery(sql);
-        if (ok && this.account = acc) {
-            this.account = null;
+        String sql = "DELETE FROM accounts WHERE username = ?";
+        try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
+            ps.setString(1, acc.getUsername());
+            boolean ok = database.pushAccountQuery(ps);
+            if (ok && this.account == acc) {
+                this.account = null;
+            }
+            return ok;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return ok;
     }
 
     /**
@@ -59,8 +73,17 @@ public class AccountManager implements Manager<Account> {
         if (acc == null) {
             return false;
         }
-        String sql = String.format("UPDATE accounts SET password='%s',is_logged_in=%b " + "WHERE username='%s'", acc.getPassword(), acc.isLoggedIn(), acc.getLogin());
-        return database.pushAccountQuery(sql);
+        String sql =
+                "UPDATE accounts SET password = ?, total_score = ? WHERE username = ?";
+        try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, acc.getPassword());
+            statement.setInt(2, acc.getTotalScore());
+            statement.setString(3, acc.getUsername());
+            return database.pushAccountQuery(statement);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -99,13 +122,13 @@ public class AccountManager implements Manager<Account> {
         return ok;
     }
 
-    
+
     /**
      * Updates an existing entry to the current state
      * @param entry - Entry to be updated
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean createInDatabase(Entry entry) {
+    public boolean createEntryInDatabase(Entry entry) {
         try (Connection conn = db.getConnection()) {
             String sql = "INSERT INTO ENTRY (text_string, entry_date, feeeling, username_e) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -113,7 +136,7 @@ public class AccountManager implements Manager<Account> {
             statement.setDate(2, java.sql.Date.valueOf(entry.getDate()));
             statement.setInt(3, entry.getFeeling());
             statement.setString(4, account.getLogin());
-        
+
             db.pushEntryQuery(statement);
             conn.close();
             return true;
@@ -124,11 +147,11 @@ public class AccountManager implements Manager<Account> {
     }
 
     /**
-     * Deletes an existing entry 
+     * Deletes an existing entry
      * @param entry - Entry to be deleted
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean deleteInDatabase(Entry entry) {
+    public boolean deleteEntryInDatabase(Entry entry) {
         try (Connection conn = db.getConnection()) {
             String sql = "DELETE FROM ENTRY WHERE text_string = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -144,13 +167,13 @@ public class AccountManager implements Manager<Account> {
 
 
     /**
-     * Edits an existing entry 
+     * Edits an existing entry
      * @param entry - Entry to be changed
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean editInDatabase(Entry entry) {
+    public boolean editEntryInDatabase(Entry entry) {
         booolean ok = deleteEntryInDatabase(entry);
         ok  = createEntryInDatabase(entry);
         return ok;
-    }  
+    }
 }
