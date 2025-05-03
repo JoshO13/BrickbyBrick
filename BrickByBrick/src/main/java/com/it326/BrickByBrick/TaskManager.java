@@ -23,8 +23,8 @@ public class TaskManager {
     private List<Task> tasks = new ArrayList<Task>();
 
     // Constructor
-    public TaskManager(Database db) {
-        this.db = db;
+    public TaskManager(Database db) throws SQLException {
+        db = Database.getInstance();
     }
 
     /**
