@@ -15,7 +15,6 @@ public class Account {
         this.login = login;
         this.password = password;
         this.totalScore = 0;
-        this.initialScore = 0;
         this.isLoggedIn = false;
     }
     public void setAccountManager(AccountManager manager) {
