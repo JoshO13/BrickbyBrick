@@ -96,8 +96,15 @@ public class CMD
         input.close();
     }
 
-    public void getInput(int input) {
+    public void getInput(int input) 
+    {
         controller.generateDecision(input);
+    }
+
+
+    public static void main(String[] args) {
+        CMD userInp = new CMD();
+        userInp.displayMenu();
     }
 
 }
