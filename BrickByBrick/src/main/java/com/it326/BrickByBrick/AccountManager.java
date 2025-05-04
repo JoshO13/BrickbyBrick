@@ -181,11 +181,11 @@ public class AccountManager implements Manager<Account> {
      * @param entry - Entry to be deleted
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean deleteInDatabase(Entry entry) {
+    public boolean deleteInDatabase(LocalDate date) {
         try (Connection conn = database.getConnection()) {
-            String sql = "DELETE FROM ENTRY WHERE text_string = ?";
+            String sql = "DELETE FROM ENTRY WHERE entry_date = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, entry.getContent());
+            statement.setDate(1, java.sql.Date.valueOf(date));
             database.pushEntryQuery(statement);
             return true;
         } catch (SQLException exception) {
@@ -201,7 +201,7 @@ public class AccountManager implements Manager<Account> {
      * @return bool - whether the changes were successfully pushed or not
      */
     public boolean editInDatabase(Entry entry) {
-        boolean ok = deleteInDatabase(entry);
+        boolean ok = deleteInDatabase(entry.getDate());
         ok  = createInDatabase(entry);
         return ok;
     }
@@ -243,5 +243,9 @@ public class AccountManager implements Manager<Account> {
         journal.addEntry(e);
         createInDatabase(e);
         return true;
+    }
+
+    public void displayAvarageFeelings(){
+        journal.displayFeelingScale();
     }
 }

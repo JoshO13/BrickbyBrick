@@ -16,14 +16,7 @@ public class Controller
 
     public Controller(CMD cmd) 
     {
-        this.cmd = cmd;
-        Database db = Database.getDatabase(); 
-        this.am = new AccountManager(new Handler(db));
-        this.tm = new TaskManager();
-        this.pm = new ProjectManager();
-
-        tm.setDatabase(db);
-        pm.setDatabase(db);
+        this.cmd = cmd;      
     }
 
     public AccountManager getAccountManager() 
@@ -57,7 +50,7 @@ public class Controller
                 }
 
 
-                break;
+                
             case 2:
                 System.out.println("Enter new username:");
                             String newUser = sc.nextLine();
@@ -181,7 +174,7 @@ public class Controller
                 break;
 
             case 3: // Journal Entry 
-                System.out.println("Journal Menu: \n1. Add Entry\n2. View Feelings\n3. Average Feeling");
+                System.out.println("Journal Menu: \n1. Add Entry\n2. Display Average Feelings\n");
                 int journalChoice = sc.nextInt();
                 sc.nextLine();
 
@@ -207,12 +200,10 @@ public class Controller
                         break;
                     case 2:
                        
-                        journal.displayFeelingScale();
-                        break;
-                    case 3:
+                        am.getAverageFeeling();
                         
-                        double avg = journal.getAverageFeeling();
-                        System.out.println("Average Feeling: " + avg);
+                        break;
+                    
                         break;
                     default:
                         System.out.println("Invalid option.");
