@@ -118,8 +118,10 @@ public class AccountManager implements Manager<Account> {
 
         if (ac.getLogin().equals(login) && ac.getPassword().equals(password)) {
             ac.setLoggedIn(true);
+            return true;
+        }else{
+            return false;
         }
-        return false;
     }
 
 
@@ -136,6 +138,7 @@ public class AccountManager implements Manager<Account> {
         }
         if (account.getLogin().equals(username) && account.isLoggedIn()) {
             account.setLoggedIn(false);
+            return true;
         }
         return false;
     }
