@@ -138,9 +138,7 @@ public class AccountManager implements Manager<Account> {
             statement.setDate(2, java.sql.Date.valueOf(entry.getDate()));
             statement.setInt(3, entry.getFeeling());
             statement.setString(4, account.getLogin());
-
             database.pushEntryQuery(statement);
-            conn.close();
             return true;
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -159,7 +157,6 @@ public class AccountManager implements Manager<Account> {
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, entry.getContent());
             database.pushEntryQuery(statement);
-            conn.close();
             return true;
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -185,7 +182,7 @@ public class AccountManager implements Manager<Account> {
             String sql = "SELECT username FROM ACCOUNT WHERE (username) = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, name);
-            Account account = database.retrieveAccountQuery(statement);
+            database.retrieveAccountQuery(statement);
             return true;
         }catch(SQLException e){
             e.printStackTrace();
