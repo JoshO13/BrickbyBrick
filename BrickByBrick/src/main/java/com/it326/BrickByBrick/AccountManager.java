@@ -18,6 +18,7 @@ public class AccountManager implements Manager<Account> {
     public AccountManager() throws SQLException{
         this.controller = controller;
         this.database = Database.getInstance();
+        this.journal = new Journal();
     }
     public Account createAccount(String username, String password) {
         Account a1 = new Account(username, password);
