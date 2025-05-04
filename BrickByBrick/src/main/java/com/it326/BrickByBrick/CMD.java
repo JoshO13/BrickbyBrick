@@ -30,7 +30,6 @@ public class CMD
 
                 try {
                     int choice = input.nextInt();
-                    input.nextLine(); 
 
                     switch (choice) {
                         case 1:
