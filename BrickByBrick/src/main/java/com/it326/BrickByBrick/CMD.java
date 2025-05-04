@@ -12,7 +12,7 @@ public class CMD
 
     public CMD() 
     {
-        
+        this.controller = new Controller(this);
     }
 
     public void displayMenu() 
