@@ -30,20 +30,6 @@ public class ProjectManager implements Manager<Project> {
      * 
      * @param project
      */
-    public boolean createInDatabaseTest(Project project, Account account) {
-        try (Connection conn = db.getConnection()) {
-            String sql = "INSERT INTO project (username_p, project_name) VALUES (?, ?)";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, account.getLogin());
-            statement.setString(2, project.getName());
-            db.pushProjectQuery(statement);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public boolean createInDatabase(Project project) {
         // Need get account??
         String username = accManager.getAccount().getLogin();
@@ -124,11 +110,11 @@ public class ProjectManager implements Manager<Project> {
      * @param taskList
      * @param isCompleted
      */
-    public boolean createProject(String name, Account account) {
+    public boolean createProject(String name) {
         Project project = new Project(name);
         projects.add(project);
         System.out.println(projects.toString());
-        boolean flag = createInDatabaseTest(project, account);
+        boolean flag = createInDatabase(project);
         if (flag){
             System.out.println("Project created.");
             return true;
