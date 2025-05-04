@@ -42,7 +42,7 @@ public class AccountManager implements Manager<Account> {
         }
         String sql = "INSERT INTO account (username, password1, original_score, total_score) VALUES (?, ?, ?, ?)";
         try (Connection conn = database.getConnection()){
-             PreparedStatement statement = conn.prepareStatement(sql);
+            PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, acc.getLogin());
             statement.setString(2, acc.getPassword());
             statement.setInt(3, 0);
@@ -101,6 +101,21 @@ public class AccountManager implements Manager<Account> {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean login(String login, String password) {
+        if (account.getLogin().equals(login) && account.getPassword().equals(password)) {
+            account.setLoggedIn(true);
+            return editInDatabase(account);
+        }
+        return false;
+    }
+    public boolean logout(String username) {
+        if (account.getLogin().equals(username) && account.isLoggedIn()) {
+            account.setLoggedIn(false);
+            return editInDatabase(account);
+        }
+        return false;
     }
 
     /**
