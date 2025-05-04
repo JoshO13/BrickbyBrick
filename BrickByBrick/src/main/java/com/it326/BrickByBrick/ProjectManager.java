@@ -12,8 +12,8 @@ public class ProjectManager implements Manager<Project> {
 
     private Database db;
     private List<Project> projects = new ArrayList<>();
-    private String oldName;
-    private Account acc;
+    AccountManager accManager = new AccountManager();
+    String oldName;
 
     /**
      * Constructor; initialized database
@@ -43,8 +43,21 @@ public class ProjectManager implements Manager<Project> {
         }
     }
 
-    public boolean createInDatabase(Project project){
-        return false;
+    public boolean createInDatabase(Project project) {
+        // Need get account??
+        String username = accManager.getAccount().getUsername();
+        String password = accManager.getAccount().getPassword();
+        try (Connection conn = db.getConnection()) {
+            String sql = "INSERT INTO project (username_p, project_name) VALUES (?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.setString(2, project.getName());
+            db.pushProjectQuery(statement);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -53,7 +66,10 @@ public class ProjectManager implements Manager<Project> {
      * @return
      */
     public boolean deleteInDatabase(Project project) {
+        //String username = accManager.getAccount().getUsername();
+        //String password = accManager.getAccount().getPassword();
         try (Connection conn = db.getConnection()) {
+            // Need to have where username??
             String sql = "DELETE FROM PROJECT WHERE project_name = (?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, project.getName());
@@ -71,35 +87,35 @@ public class ProjectManager implements Manager<Project> {
      * 
      * @param project
      */
-    public boolean editInDatabase(Project project) {
-        String newName = project.getName();
-        try (Connection conn = db.getConnection()) {
+    public boolean editInDatabase(Project p) {
+        String newName = p.getName();
+                try (Connection conn = db.getConnection()) {
             String sql = "UPDATE project SET (project_name) = (?) WHERE project_name = (?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, newName);
             statement.setString(2, oldName);
             db.pushProjectQuery(statement);
-            conn.close();
             return true;
         } catch (SQLException exception) {
             exception.printStackTrace();
             return false;
         }
-    }
-
-    public Project retrieveProject(String retrieveName){
-        try(Connection conn = db.getConnection()){
+ 
+    } 
+    public Project retrieveProject(String retrieveName) {
+        try (Connection conn = db.getConnection()) {
             String sql = "SELECT * FROM project WHERE (project_name) = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, retrieveName);
             Project project = db.retrieveProjectQuery(statement);
             return project;
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
 
     }
+
     /**
      * Create project and add to list
      * 
@@ -108,15 +124,18 @@ public class ProjectManager implements Manager<Project> {
      * @param taskList
      * @param isCompleted
      */
-    public void createProject(String name, Account account) {
+    public boolean createProject(String name, Account account) {
         Project project = new Project(name);
         projects.add(project);
         System.out.println(projects.toString());
-        boolean flag = createInDatabaseTest(project,account);
-        if(flag)
+        boolean flag = createInDatabaseTest(project, account);
+        if (flag){
             System.out.println("Project created.");
-        else{
+            return true;
+        }
+        else {
             System.out.println("Creating project in database failed");
+            return false;    
         }
     }
 
@@ -125,17 +144,20 @@ public class ProjectManager implements Manager<Project> {
      * 
      * @param project
      */
-    public void deleteProject(Project project) {
+    public boolean deleteProject(String name) {
         Iterator<Project> iterator = projects.iterator();
         while (iterator.hasNext()) {
             Project p = iterator.next();
-            if (p.getName().equals(project.getName())) {
+            if (p.getName().equals(name)) {
                 iterator.remove();
-                deleteInDatabase(project);
+                p = new Project(name);
+                deleteInDatabase(p);
                 System.out.println("Project deleted.");
-                break;
+                return true;
             }
         }
+        System.out.println("Could not find project");
+        return false;
     }
 
     /**
@@ -144,7 +166,7 @@ public class ProjectManager implements Manager<Project> {
      * 
      * @param project
      */
-    public void editProject(Project project) {
+    public boolean editProject(Project project) {
         // store old name for updating
         oldName = project.getName();
         System.out.println("What would you like to edit?");
@@ -168,9 +190,12 @@ public class ProjectManager implements Manager<Project> {
                 System.out.println("Invalid choice. Please try again.");
                 break;
         }
+        editInDatabase(project);
         scanner.close();
+        return true;
     }
 
-    
-
+    public List<Project> getAllProjects(){
+        return projects;
+    }
 }
