@@ -102,7 +102,7 @@ public class AccountManager implements Manager<Account> {
         try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, newPassword);
             statement.setString(2, acc.getLogin());
-            boolean ok = database.pushAccountQuery(sql);
+            boolean ok = database.pushAccountQuery(statement);
             if (ok) {
                 acc.setPassword(newPassword);
             }
@@ -204,6 +204,9 @@ public class AccountManager implements Manager<Account> {
             return null;
         }
 
+    }
+    public Account getAccount() {
+        return this.account;
     }
 
     public boolean findUser(String name){
