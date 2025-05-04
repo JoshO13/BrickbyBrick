@@ -88,12 +88,12 @@ public class Database {
             Statement stmnt = connection.createStatement();
             ResultSet rs = stmnt.executeQuery(sqlStatement);
             if (rs.next()) {
-                int taskID = rs.getInt("task_id");
-                String name = rs.getString("task_name");
+                String name = rs.getString("name");
                 int score = rs.getInt("score");
                 int priority = rs.getInt("priority");
                 Date dueDate = rs.getDate("due_date");
-                String user = rs.getString("username");
+                String user = rs.getString("username_t");
+                String project = rs.getString("project");
 
                 Task retrievedTask = new Task(name, dueDate, priority, score);
                 return retrievedTask;
@@ -129,8 +129,7 @@ public class Database {
             ResultSet rs = sqlStatement.executeQuery();
             if (rs.next()) {
                 String username = rs.getString("username");
-                String password = rs.getString("password");
-                int orignalScore = rs.getInt("original_score");
+                String password = rs.getString("password1");
                 int totalScore = rs.getInt("total_score");
                 Account account = new Account(username, password);
                 return account;
@@ -149,14 +148,14 @@ public class Database {
             if (rs.next()) {
                 String text = rs.getString("text_string");
                 Date date = rs.getDate("entry_date");
-                int feeling = rs.getInt("feeling");
-                String user = rs.getString("username");
+                int feeling = rs.getInt("feeeling");
+                String user = rs.getString("username_e");
                 Entry entry = new Entry(text, feeling);
                 return entry;
             }
         } catch (SQLException exception) {
             System.out.println("Retrieving entry failed");
-            exception.getMessage();
+            exception.printStackTrace();
         }
         return null;
     }
