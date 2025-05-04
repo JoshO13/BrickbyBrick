@@ -14,6 +14,7 @@ public class ProjectManager implements Manager<Project> {
     private List<Project> projects = new ArrayList<>();
     AccountManager accManager = new AccountManager();
     String oldName;
+    TaskManager tm = new TaskManager();
 
     /**
      * Constructor; initialized database
@@ -45,8 +46,7 @@ public class ProjectManager implements Manager<Project> {
 
     public boolean createInDatabase(Project project) {
         // Need get account??
-        String username = accManager.getAccount().getUsername();
-        String password = accManager.getAccount().getPassword();
+        String username = accManager.getAccount().getLogin();
         try (Connection conn = db.getConnection()) {
             String sql = "INSERT INTO project (username_p, project_name) VALUES (?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -193,6 +193,22 @@ public class ProjectManager implements Manager<Project> {
         editInDatabase(project);
         scanner.close();
         return true;
+    }
+
+    public boolean addTaskToProject(String taskName, String projectName){
+        Task taskToAdd = tm.searchTaskName(taskName);
+        Project projectToAdd = searchProject(projectName);
+        List<Task> taskList = projectToAdd.getTaskList();
+        taskList.add(taskToAdd);
+    }
+
+    private Project searchProject(String projectName){
+        for(Project p : projects){
+            if(p.getName() == projectName){
+                return p;
+            }
+        }
+        System.out.println("Can't find project");
     }
 
     public List<Project> getAllProjects(){
