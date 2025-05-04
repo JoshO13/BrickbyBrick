@@ -31,7 +31,7 @@ public class Controller
         return am;
     }
 
-    public void generateAccountDecsions(int input)
+    public boolean generateAccountDecsions(int input)
     {
         Scanner sc = new Scanner(System.in);
 
@@ -44,15 +44,19 @@ public class Controller
                 System.out.println("Enter password:");
                 String pw = sc.nextLine();
 
-                Account loginAttempt = new Account(userName, pw);
-                if (loginAttempt.login(userName, pw)) 
+                am.createAccount(userName, pw);
+                if (am.login(userName, pw)) 
                 {
                     
                     System.out.println("Successfully logged in!\n");
+                    return true;
                 } else 
                 {
                     System.out.println("Username/Password was incorrect. Please try again.");
+                    return false;
                 }
+
+
                 break;
             case 2:
                 System.out.println("Enter new username:");
@@ -73,8 +77,9 @@ public class Controller
             case 3:
 
             default:
-                System.out.println();
+                System.out.println("Please enter a valid choice.");
         }
+        return false;
     }
 
 
@@ -191,8 +196,14 @@ public class Controller
 
                         // Need to get current user’s Journal instance
                         
-                        journal.addEntry(content, feeling);
-                        System.out.println("Entry added.");
+                        boolean entryAdded = am.addEntry(content, feeling);
+
+                        if (entryAdded) {
+                            System.out.println("Entry added successfully.");
+                        }else{
+                            System.out.println("Entry could not be added.");
+                        }
+                        
                         break;
                     case 2:
                        
