@@ -103,13 +103,26 @@ public class AccountManager implements Manager<Account> {
         }
     }
 
+
     public boolean login(String login, String password) {
-        if (account.getLogin().equals(login) && account.getPassword().equals(password)) {
-            account.setLoggedIn(true);
-            return editInDatabase(account);
+        Account ac = null;
+        try (Connection conn = database.getConnection()) {
+            String sql = "SELECT * FROM ACCOUNT WHERE (username) = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, login);
+            ac = database.retrieveAccountQuery(statement);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        if (ac.getLogin().equals(login) && ac.getPassword().equals(password)) {
+            ac.setLoggedIn(true);
         }
         return false;
     }
+
+
     public boolean logout(String username) {
         if (account.getLogin().equals(username) && account.isLoggedIn()) {
             account.setLoggedIn(false);
