@@ -16,6 +16,7 @@ public class Controller
     private Journal journal;
     private Account acc;
     private String username;
+    private Account account;
 
     public Controller(CMD cmd) throws SQLException 
     {
@@ -49,6 +50,7 @@ public class Controller
                 if (am.login(username, pw)) 
                 {
                     System.out.println("Successfully logged in!\n");
+                    account = new Account(username, pw);
                     return true;
                 } else 
                 {
@@ -114,7 +116,7 @@ public class Controller
                         System.out.println("Enter score:");
                         int score = sc.nextInt();
 
-                        tm.createTask(name, date, priority, score);
+                        tm.createTask(name, date, priority, score, account);
                         System.out.println("Task created.");
                         break;
                     case 2:
@@ -166,7 +168,7 @@ public class Controller
                         String pname = sc.nextLine();
 
 
-                        pm.createProject(pname);
+                        pm.createProject(pname,account);
                         System.out.println("Project created.");
                         break;
                     case 2:
@@ -204,7 +206,7 @@ public class Controller
 
                         // Need to get current user’s Journal instance
                         
-                        boolean entryAdded = am.addEntry(content, feeling);
+                        boolean entryAdded = am.addEntry(content, feeling, account);
 
                         if (entryAdded) {
                             System.out.println("Entry added successfully.");

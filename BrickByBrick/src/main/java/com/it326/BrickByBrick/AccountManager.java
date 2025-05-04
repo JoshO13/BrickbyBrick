@@ -22,7 +22,7 @@ public class AccountManager implements Manager<Account> {
     }
     public Account createAccount(String username, String password) {
         Account a1 = new Account(username, password);
-        boolean ok = createInDatabase(a1);
+        boolean ok = createInDatabase(a1, a1);
         if (ok) {
             accounts.add(a1);
             a1.setAccountManager(this);
@@ -37,7 +37,7 @@ public class AccountManager implements Manager<Account> {
      * @param acc - account to be added
      * @return bool - whether the account was created (true) or not (false)
      */
-    public boolean createInDatabase(Account acc) {
+    public boolean createInDatabase(Account acc, Account dummy) {
         if (acc == null) {
             return false;
         }
@@ -200,7 +200,7 @@ public class AccountManager implements Manager<Account> {
      * @param entry - Entry to be updated
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean createInDatabase(Entry entry) {
+    public boolean createInDatabase(Entry entry, Account dummy) {
         try (Connection conn = database.getConnection()) {
             String sql = "INSERT INTO ENTRY (text_string, entry_date, feeeling, username_e) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -240,9 +240,9 @@ public class AccountManager implements Manager<Account> {
      * @param entry - Entry to be changed
      * @return bool - whether the changes were successfully pushed or not
      */
-    public boolean editInDatabase(Entry entry) {
+    public boolean editInDatabase(Entry entry, Account account) {
         boolean ok = deleteInDatabase(entry.getDate());
-        ok  = createInDatabase(entry);
+        ok  = createInDatabase(entry, account);
         return ok;
     }
 
@@ -278,10 +278,10 @@ public class AccountManager implements Manager<Account> {
     }
 
 
-    public boolean addEntry(String content, int feeling){
+    public boolean addEntry(String content, int feeling, Account account){
         Entry e = new Entry (content,feeling);
         journal.addEntry(e);
-        createInDatabase(e);
+        createInDatabase(e, account);
         return true;
     }
 

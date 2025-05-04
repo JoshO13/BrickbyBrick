@@ -33,9 +33,9 @@ public class TaskManager {
      * 
      * @return
      */
-    public boolean createTaskInDatabase(Task task) {
+    public boolean createTaskInDatabase(Task task, Account account) {
         // TO-DO: create a task in the database
-       String username = am.getAccount().getLogin();
+       String username = account.getLogin();
         String sql = "INSERT INTO task (name, priority, due_date, score, username_t, project) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, task.getName());
@@ -43,6 +43,7 @@ public class TaskManager {
             pstmt.setDate(3, new java.sql.Date(task.getDate().getTime()));
             pstmt.setInt(4, task.getScore());
             pstmt.setString(5, username);
+            pstmt.setString(7, null);
 
             int rowsInserted = pstmt.executeUpdate();
             return rowsInserted > 0;
@@ -81,10 +82,10 @@ public class TaskManager {
      * @param score
      * @param difficultyLevel
      */
-    public boolean createTask(String name, Date date, int priorityLevel, int score) {
+    public boolean createTask(String name, Date date, int priorityLevel, int score, Account account) {
         Task task = new Task(name, date, priorityLevel, score);
         tasks.add(task);
-        createTaskInDatabase(task);
+        createTaskInDatabase(task, account);
         System.out.println("Task created.");
         return true;
     }

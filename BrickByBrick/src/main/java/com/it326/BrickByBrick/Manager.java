@@ -6,7 +6,7 @@ public interface Manager<T> {
      * 
      * @param object
      */
-    public boolean createInDatabase(T object);
+    public boolean createInDatabase(T object, Account account);
 
     /**
      * delete object in database
