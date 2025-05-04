@@ -2,17 +2,20 @@ package com.it326.BrickByBrick;
 
 import java.util.Scanner;
 
-public class CMD {
+public class CMD 
+{
     private Account acc;
     private AccountManager am;
     private boolean loop = true;
     private Controller controller;
 
-    public CMD() {
+    public CMD() 
+    {
         
     }
 
-    public void displayMenu() {
+    public void displayMenu() 
+    {
         Scanner input = new Scanner(System.in);
 
         System.out.println("Welcome to Brick by Brick!");
@@ -30,40 +33,13 @@ public class CMD {
 
                     switch (choice) {
                         case 1:
-                            System.out.println("Enter username:");
-                            String userName = input.nextLine();
-
-                            System.out.println("Enter password:");
-                            String pw = input.nextLine();
-
-                            Account loginAttempt = new Account(userName, pw);
-                            if (loginAttempt.login(userName, pw)) 
-                            {
-                                acc = loginAttempt;
-                                System.out.println("Successfully logged in!\n");
-                            } else 
-                            {
-                                System.out.println("Username/Password was incorrect. Please try again.");
-                            }
+                            controller.generateAccountDecsions(choice);
                             break;
 
                         case 2:
-                            System.out.println("Enter new username:");
-                            String newUser = input.nextLine();
-
-                            //need logic to check if a username has already been used
-                            if (am.findUser(newUser)) {
-                                System.out.println("Username already taken. Please try again.");
-                            } else {
-                                System.out.println("Enter new password:");
-                                String newPw = input.nextLine();
-                                acc = new Account(newUser, newPw);
-                                acc.setAccountManager(new AccountManager(controller.getHandler())); 
-                                acc.getAccountManager().createInDatabase(acc);
-                                System.out.println("Account created and saved to database.");
-                            }
+                            controller.generateAccountDecsions(choice);
                             break;
-
+                            
                         case 3:
                             System.out.println("Thank you for trying Brick by Brick!");
                             loop = false;
