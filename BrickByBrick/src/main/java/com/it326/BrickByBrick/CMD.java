@@ -1,5 +1,6 @@
 package com.it326.BrickByBrick;
 
+import java.nio.file.PathMatcher;
 import java.util.Scanner;
 
 public class CMD 
@@ -19,11 +20,11 @@ public class CMD
         Scanner input = new Scanner(System.in);
 
         System.out.println("Welcome to Brick by Brick!");
-
+        boolean loginAttempt = false;
         while (loop) 
         {
             // Login/register/quit
-            while (acc == null) 
+            while (loginAttempt == false) 
             {
                 System.out.println("\n1. Login\n2. Register\n3. Quit");
 
@@ -33,11 +34,11 @@ public class CMD
 
                     switch (choice) {
                         case 1:
-                            controller.generateAccountDecsions(choice);
+                            loginAttempt = controller.generateAccountDecsions(choice);
                             break;
 
                         case 2:
-                            controller.generateAccountDecsions(choice);
+                            loginAttempt = controller.generateAccountDecsions(choice);
                             break;
                             
                         case 3:
@@ -78,9 +79,8 @@ public class CMD
                             controller.generateDecision(3);
                             break;
                         case 4:
-                            acc.logout();
-                            acc = null;
-                            System.out.println("You have been logged out.");
+                            
+                            controller.generateDecision(4);
                             break;
                         default:
                             System.out.println("Invalid option. Try again.");
