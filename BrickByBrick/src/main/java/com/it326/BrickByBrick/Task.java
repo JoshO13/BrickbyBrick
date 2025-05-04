@@ -1,14 +1,14 @@
 package com.it326.BrickByBrick;
+
 import java.util.Date;
+
 //Task class
-public class Task implements Cloneable{
+public class Task implements Cloneable {
 
     private String taskName;
     private int priorityLevel;
     private Date date;
     private int score;
-    private TaskManager taskManager;
-    private TaskSuggester taskSuggester;
 
     public Task(String taskName, Date date, int priorityLevel, int score) {
         this.taskName = taskName;
@@ -16,21 +16,28 @@ public class Task implements Cloneable{
         this.priorityLevel = priorityLevel;
         this.score = score;
     }
+
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
+
     public void setPriorityLevel(int priorityLevel) {
         this.priorityLevel = priorityLevel;
     }
+
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public int getScore() {
         return score;
     }
 
-    public Date getDate(){
+    public Date getDate() {
         return date;
     }
 
@@ -41,11 +48,28 @@ public class Task implements Cloneable{
     public int getPriorityLevel() {
         return priorityLevel;
     }
+
     @Override
     public Task clone(Task task) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'clone'");
+        try {
+            Task clone = (Task) super.clone();
+            // Deep copy the Date object to prevent shared references
+            clone.date = date != null ? new Date(date.getTime()) : null;
+            // No deep copy needed for primitives/Strings
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            // This shouldn't happen since we implement Cloneable
+            throw new AssertionError();
+        }
     }
 
-    
+    public String toString() {
+        return "Task{" +
+                "taskName='" + taskName + '\'' +
+                ", priorityLevel=" + priorityLevel +
+                ", date=" + date +
+                ", score=" + score +
+                '}';
+    }
+
 }
