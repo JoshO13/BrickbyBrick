@@ -106,19 +106,18 @@ public class AccountManager implements Manager<Account> {
 
 
     public boolean login(String login, String password) {
-        Account ac = null;
         try (Connection conn = database.getConnection()) {
             String sql = "SELECT * FROM ACCOUNT WHERE (username) = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, login);
-            ac = database.retrieveAccountQuery(statement);
+            this.account = database.retrieveAccountQuery(statement);
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
 
-        if (ac.getLogin().equals(login) && ac.getPassword().equals(password)) {
-            ac.setLoggedIn(true);
+        if (account.getLogin().equals(login) && account.getPassword().equals(password)) {
+            this.account.setLoggedIn(true);
             return true;
         }else{
             return false;
@@ -127,18 +126,17 @@ public class AccountManager implements Manager<Account> {
 
 
     public boolean logout(String username) {
-        Account ac = null;
         try (Connection conn = database.getConnection()) {
             String sql = "SELECT * FROM ACCOUNT WHERE (username) = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, username);
-            ac = database.retrieveAccountQuery(statement);
+            this.account = database.retrieveAccountQuery(statement);
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
-        if (account.getLogin().equals(username) && account.isLoggedIn()) {
-            account.setLoggedIn(false);
+        if (this.account.getLogin().equals(username) && this.account.isLoggedIn()) {
+            this.account.setLoggedIn(false);
             return true;
         }
         return false;
