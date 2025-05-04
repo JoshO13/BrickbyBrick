@@ -80,10 +80,6 @@ public class Account {
         return totalScore;
     }
 
-    public int getIntialScore() {
-        return intialScore;
-    }
-
     public boolean isLoggedIn() {
         return isLoggedIn;
     }
@@ -102,9 +98,5 @@ public class Account {
 
     public void setTotalScore(int totalScore) {
         this.totalScore = totalScore;
-    }
-
-    public void setInitialScore(int initialScore) {
-        this.initialScore = initialScore;
     }
 }
