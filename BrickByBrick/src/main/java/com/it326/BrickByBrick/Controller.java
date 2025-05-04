@@ -13,6 +13,7 @@ public class Controller
     private TaskManager tm;
     private ProjectManager pm;
     private Journal journal;
+    private Account acc;
 
     public Controller(CMD cmd) 
     {
@@ -30,6 +31,8 @@ public class Controller
 
         switch (input) 
         {
+
+            //login
             case 1:
                 System.out.println("Enter username:");
                 String userName = sc.nextLine();
@@ -37,10 +40,9 @@ public class Controller
                 System.out.println("Enter password:");
                 String pw = sc.nextLine();
 
-                am.createAccount(userName, pw);
+                
                 if (am.login(userName, pw)) 
                 {
-                    
                     System.out.println("Successfully logged in!\n");
                     return true;
                 } else 
@@ -50,23 +52,25 @@ public class Controller
                 }
 
 
-                
+                //register
             case 2:
                 System.out.println("Enter new username:");
-                            String newUser = sc.nextLine();
+                String newUser = sc.nextLine();
 
-                            //need logic to check if a username has already been used
-                            if (am.findUser(newUser)) 
-                            {
-                                System.out.println("Username already taken. Please try again.");
-                            } else 
-                            {
-                                System.out.println("Enter new password:");
-                                String newPw = sc.nextLine();
-                                
-                                am.createAccount(newUser, newPw);
-                            }
-                break;
+                //need logic to check if a username has already been used
+                if (am.findUser(newUser)) 
+                {
+                    System.out.println("Username already taken. Please try again.");
+                    return false;
+                } else 
+                {
+                    System.out.println("Enter new password:");
+                    String newPw = sc.nextLine();
+                    
+                    am.createAccount(newUser, newPw);
+                    return true;
+                }
+            
             case 3:
 
             default:
@@ -84,7 +88,7 @@ public class Controller
         switch (input) 
         {
             case 1: // Task Management
-                System.out.println("Task Menu: \n1. Create Task\n2. View Tasks\n3. Delete Task\n4. Complete Task");
+                System.out.println("Task Menu: \n1. Create Task\n2. Delete Task\n3. Complete Task");
                 int taskChoice = sc.nextInt();
                 sc.nextLine(); 
 
@@ -109,29 +113,33 @@ public class Controller
                         System.out.println("Task created.");
                         break;
                     case 2:
-                        
-                        System.out.println("Displaying all tasks:");
-
-                        tm.displayAllTasks();
-                        
-                        break;
-                    case 3:
                         System.out.println("Enter task name to delete:");
                         String delTask = sc.nextLine();
 
 
 
-                        tm.deleteTask(delTask);
-                        System.out.println("Task deleted if it existed.");
+                        boolean deleted = tm.deleteTask(delTask);
+
+                        if (deleted) {
+                            System.out.println("Task has been deleted.");
+                        }else{
+                            System.out.println("Task could not be deleted.");
+                        }
+                        
                         break;
 
 
-                    case 4:
+                    case 3:
                         System.out.println("Enter task name to mark as complete:");
                         String compTask = sc.nextLine();
-                        tm.completeTask(compTask);
+                        boolean completed = tm.completeTask(compTask);
 
-                        System.out.println("Task marked as complete.");
+                        if (completed) {
+                            System.out.println("Task marked as complete.");
+                        }else{
+                            System.out.println("Task could not marked as complete.");
+                        }
+                        
                         break;
 
                     default:
@@ -202,8 +210,6 @@ public class Controller
                        
                         am.getAverageFeeling();
                         
-                        break;
-                    
                         break;
                     default:
                         System.out.println("Invalid option.");
