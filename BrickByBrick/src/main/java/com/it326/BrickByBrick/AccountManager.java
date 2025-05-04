@@ -177,6 +177,20 @@ public class AccountManager implements Manager<Account> {
     }
 
 
+    public Entry retrieveEntry(Entry entry){
+        try(Connection conn = database.getConnection()){
+            String sql = "SELECT text_string FROM ENTRY WHERE (text_string) = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, entry.getContent());
+            Entry entry2 = database.retrieveEntryQuery(statement);
+            return entry2;
+        }catch(SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
     public boolean findUser(String name){
         try(Connection conn = database.getConnection()){
             String sql = "SELECT username FROM ACCOUNT WHERE (username) = ?";
