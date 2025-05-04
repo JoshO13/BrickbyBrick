@@ -1,21 +1,22 @@
 package com.it326.BrickByBrick;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.lang.reflect.Array;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
 public class TaskManagerTest {
-    
+    Database db;
+
     @Test
     void testCreateTask() throws SQLException {
-       TaskManager tm = new TaskManager();
+        TaskManager tm = new TaskManager();
         Date date = new Date();
-        String name = "test Task";
-        tm.createTask("test Task",date, 5, 10);
+        tm.createTask("test Task", date, 10, 10);
         List<Task> tasks = tm.getTasks();
+        tasks.add(tm.searchTaskName("test Task"));
         for (Task t : tasks) {
             assertEquals("test Task", t.getName());
         }

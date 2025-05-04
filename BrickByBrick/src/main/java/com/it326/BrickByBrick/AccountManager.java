@@ -245,7 +245,7 @@ public class AccountManager implements Manager<Account> {
         return true;
     }
 
-    public void displayAvarageFeelings(){
+    public void displayAverageFeelings(){
         journal.displayFeelingScale();
     }
 }
