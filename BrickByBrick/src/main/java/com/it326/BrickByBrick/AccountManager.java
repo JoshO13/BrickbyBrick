@@ -4,16 +4,28 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 //Account Handler Interface
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AccountManager implements Manager<Account> {
     private Account account;
+    private List<Account> accounts = new ArrayList<>();
     private Database database;
-   // private Controller controller;
+    private Controller controller;
 
     public AccountManager() throws SQLException{
-       // this.controller = controller;
+        this.controller = controller;
         this.database = Database.getInstance();
+    }
+    public Account createAccount(String username, String password) {
+        Account a1 = new Account(username, password);
+        boolean ok = createInDatabase(a1);
+        if (ok) {
+            accounts.add(a1);
+            a1.setAccountManager(this);
+            return a1;
+        }
     }
 
     /**
