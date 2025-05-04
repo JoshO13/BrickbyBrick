@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 //Account Handler Interface
+import java.time.LocalDate;
 
 
 public class AccountManager implements Manager<Account> {
@@ -177,11 +178,11 @@ public class AccountManager implements Manager<Account> {
     }
 
 
-    public Entry retrieveEntry(Entry entry){
+    public Entry retrieveEntry(LocalDate date){
         try(Connection conn = database.getConnection()){
-            String sql = "SELECT text_string FROM ENTRY WHERE (text_string) = ?";
+            String sql = "SELECT entry_date FROM ENTRY WHERE (entry_date) = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, entry.getContent());
+            statement.setDate(1, java.sql.Date.valueOf(date));
             Entry entry2 = database.retrieveEntryQuery(statement);
             return entry2;
         }catch(SQLException e){
