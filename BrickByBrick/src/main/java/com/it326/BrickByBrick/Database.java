@@ -123,10 +123,10 @@ public class Database {
         return null;
     }
 
-    public Account retrieveAccountQuery(String sqlStatement) {
+    public Account retrieveAccountQuery(PreparedStatement sqlStatement) {
         try {
             Statement stmnt = connection.createStatement();
-            ResultSet rs = stmnt.executeQuery(sqlStatement);
+            ResultSet rs = sqlStatement.executeQuery();
             if (rs.next()) {
                 String username = rs.getString("username");
                 String password = rs.getString("password");
