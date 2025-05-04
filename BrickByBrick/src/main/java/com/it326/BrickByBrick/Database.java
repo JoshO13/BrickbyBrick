@@ -45,7 +45,7 @@ public class Database {
             return true;
         } catch (SQLException exception) {
             System.out.println("Updating task in database failed");
-            exception.getMessage();
+            exception.printStackTrace();
             return false;
         }
 
@@ -79,7 +79,7 @@ public class Database {
             statement.executeUpdate();
         } catch (SQLException exception) {
             System.out.println("Updating entry failed");
-            exception.getMessage();
+            exception.printStackTrace();
         }
     }
 
