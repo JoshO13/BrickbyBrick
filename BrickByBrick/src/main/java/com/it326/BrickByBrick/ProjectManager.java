@@ -72,7 +72,7 @@ public class ProjectManager implements Manager<Project> {
             // Need to have where username??
             String sql = "DELETE FROM PROJECT WHERE project_name = (?)";
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, project.getName());
+            statement.setString(1,project.getName());
             db.pushProjectQuery(statement);
             return true;
         } catch (SQLException exception) {
@@ -194,14 +194,24 @@ public class ProjectManager implements Manager<Project> {
         scanner.close();
         return true;
     }
-
+    /**
+     * Adds task to project
+     * @param taskName
+     * @param projectName
+     * @return
+     */
     public boolean addTaskToProject(String taskName, String projectName){
         Task taskToAdd = tm.searchTaskName(taskName);
         Project projectToAdd = searchProject(projectName);
         List<Task> taskList = projectToAdd.getTaskList();
         taskList.add(taskToAdd);
+        return true;
     }
-
+    /**
+     * search for Project
+     * @param projectName
+     * @return
+     */
     private Project searchProject(String projectName){
         for(Project p : projects){
             if(p.getName() == projectName){
@@ -209,8 +219,13 @@ public class ProjectManager implements Manager<Project> {
             }
         }
         System.out.println("Can't find project");
+        return null;
     }
 
+    /**
+     * return all the project list
+     * @return
+     */
     public List<Project> getAllProjects(){
         return projects;
     }
