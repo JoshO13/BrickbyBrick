@@ -131,7 +131,7 @@ public class AccountManager implements Manager<Account> {
      * @return bool - whether the changes were successfully pushed or not
      */
     public boolean createInDatabase(Entry entry) {
-        try (Connection conn = db.getConnection()) {
+        try (Connection conn = database.getConnection()) {
             String sql = "INSERT INTO ENTRY (text_string, entry_date, feeeling, username_e) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, entry.getContent());
@@ -139,7 +139,7 @@ public class AccountManager implements Manager<Account> {
             statement.setInt(3, entry.getFeeling());
             statement.setString(4, account.getLogin());
 
-            db.pushEntryQuery(statement);
+            database.pushEntryQuery(statement);
             conn.close();
             return true;
         } catch (SQLException exception) {
@@ -154,11 +154,11 @@ public class AccountManager implements Manager<Account> {
      * @return bool - whether the changes were successfully pushed or not
      */
     public boolean deleteInDatabase(Entry entry) {
-        try (Connection conn = db.getConnection()) {
+        try (Connection conn = database.getConnection()) {
             String sql = "DELETE FROM ENTRY WHERE text_string = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, entry.getContent());
-            db.pushEntryQuery(statement);
+            database.pushEntryQuery(statement);
             conn.close();
             return true;
         } catch (SQLException exception) {
@@ -174,8 +174,8 @@ public class AccountManager implements Manager<Account> {
      * @return bool - whether the changes were successfully pushed or not
      */
     public boolean editInDatabase(Entry entry) {
-        booolean ok = deleteEntryInDatabase(entry);
-        ok  = createEntryInDatabase(entry);
+        boolean ok = deleteInDatabase(entry);
+        ok  = createInDatabase(entry);
         return ok;
     }
 }
