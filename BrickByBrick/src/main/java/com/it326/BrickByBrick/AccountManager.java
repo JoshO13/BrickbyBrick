@@ -55,8 +55,8 @@ public class AccountManager implements Manager<Account> {
         }
         String sql = "DELETE FROM accounts WHERE username = ?";
         try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
-            ps.setString(1, acc.getUsername());
-            boolean ok = database.pushAccountQuery(ps);
+            statement.setString(1, acc.getLogin());
+            boolean ok = database.pushAccountQuery(statement);
             if (ok && this.account == acc) {
                 this.account = null;
             }
@@ -76,12 +76,11 @@ public class AccountManager implements Manager<Account> {
         if (acc == null) {
             return false;
         }
-        String sql =
-                "UPDATE accounts SET password = ?, total_score = ? WHERE username = ?";
+        String sql = "UPDATE accounts SET password = ?, total_score = ? WHERE username = ?";
         try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, acc.getPassword());
             statement.setInt(2, acc.getTotalScore());
-            statement.setString(3, acc.getUsername());
+            statement.setString(3, acc.getLogin());
             return database.pushAccountQuery(statement);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -99,12 +98,20 @@ public class AccountManager implements Manager<Account> {
         if (acc == null) {
             return false;
         }
-        String sql = String.format("UPDATE accounts SET password='%s' WHERE username='%s'", newPassword, acc.getLogin());
-        boolean ok = database.pushAccountQuery(sql);
-        if (ok) {
-            acc.setPassword(newPassword);
+        String sql = "UPDATE accounts SET password = ? WHERE username = ?";
+        try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, newPassword);
+            statement.setString(2, acc.getLogin());
+            boolean ok = database.pushAccountQuery(sql);
+            if (ok) {
+                acc.setPassword(newPassword);
+            }
+            return ok;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return ok;
+
     }
 
     /**
@@ -117,12 +124,19 @@ public class AccountManager implements Manager<Account> {
         if (acc == null) {
             return false;
         }
-        String sql = String.format("UPDATE accounts SET username='%s' WHERE username='%s'", newUsername, acc.getLogin());
-        boolean ok = database.pushAccountQuery(sql);
-        if (ok) {
-            acc.setLogin(newUsername);
+        String sql = "UPDATE accounts SET username = ? WHERE username = ?";
+        try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, newUsername);
+            statement.setString(2, acc.getLogin());
+            boolean ok = database.pushAccountQuery(statement);
+            if (ok) {
+                acc.setLogin(newUsername);
+            }
+            return ok;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return ok;
     }
 
 
