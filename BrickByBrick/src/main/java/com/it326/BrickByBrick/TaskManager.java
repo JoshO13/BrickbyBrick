@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -97,14 +98,20 @@ public class TaskManager {
      * @return
      */
     public boolean deleteTask(String taskName) {
-        for (Task t : tasks) {
+        boolean flag = false;
+        Iterator<Task> iterator = tasks.iterator();
+        while(iterator.hasNext()){
+            Task t = iterator.next();
             if (t.getName().equals(taskName)) {
-                tasks.remove(t);
+                iterator.remove();
                 deleteTaskInDatabase(t);
-                return true;
+                
+                flag = true;
             }
+                
         }
-        return false;
+        return flag;
+       
     }
 
     public boolean editInDatabase(Task task) {
