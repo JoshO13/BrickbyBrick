@@ -59,7 +59,9 @@ public class CMD
             }
 
             // App Functions
-            while (acc != null) 
+            
+
+            while (loginAttempt) 
             {
                 System.out.println("\nMain Menu:");
                 System.out.println("1. Manage Tasks\n2. Manage Projects\n3. Manage Journal\n4. Logout");
@@ -79,8 +81,7 @@ public class CMD
                             controller.generateDecision(3);
                             break;
                         case 4:
-                            
-                            controller.generateDecision(4);
+                            loginAttempt = controller.generateDecision(4);
                             break;
                         default:
                             System.out.println("Invalid option. Try again.");

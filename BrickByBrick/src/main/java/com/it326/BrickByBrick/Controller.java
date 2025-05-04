@@ -80,7 +80,7 @@ public class Controller
     }
 
 
-    public void generateDecision(int input) 
+    public boolean generateDecision(int input) 
     {
 
         Scanner sc = new Scanner(System.in);
@@ -120,7 +120,8 @@ public class Controller
 
                         boolean deleted = tm.deleteTask(delTask);
 
-                        if (deleted) {
+                        if (deleted) 
+                        {
                             System.out.println("Task has been deleted.");
                         }else{
                             System.out.println("Task could not be deleted.");
@@ -134,7 +135,8 @@ public class Controller
                         String compTask = sc.nextLine();
                         boolean completed = tm.completeTask(compTask);
 
-                        if (completed) {
+                        if (completed) 
+                        {
                             System.out.println("Task marked as complete.");
                         }else{
                             System.out.println("Task could not marked as complete.");
@@ -216,8 +218,14 @@ public class Controller
                 }
                 break;
 
+            case 4:
+                am.logout();
+                return false;
+                
+
             default:
                 System.out.println("Invalid category input.");
         }
+        return false;
     }
 }
