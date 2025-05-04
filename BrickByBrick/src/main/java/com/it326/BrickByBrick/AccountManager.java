@@ -180,7 +180,7 @@ public class AccountManager implements Manager<Account> {
     }
 
 
-    private boolean findUser(String name){
+    public boolean findUser(String name){
         try(Connection conn = database.getConnection()){
             String sql = "SELECT username FROM ACCOUNT WHERE (username) = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
