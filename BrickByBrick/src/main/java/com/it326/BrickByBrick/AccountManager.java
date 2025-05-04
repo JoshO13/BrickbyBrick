@@ -244,4 +244,8 @@ public class AccountManager implements Manager<Account> {
         createInDatabase(e);
         return true;
     }
+
+    public void displayAvarageFeelings(){
+        journal.displayFeelingScale();
+    }
 }
