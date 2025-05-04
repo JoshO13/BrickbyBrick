@@ -8,7 +8,6 @@ public class Account {
     private String password;
     private AccountManager accountManager;
     private int totalScore;
-    private int initialScore;
     private boolean isLoggedIn;
 
     public Account(String login, String password) {
@@ -22,47 +21,25 @@ public class Account {
     }
     //Logic to change the password of an account in the database, given a new password
     public boolean changePassword(String newPassword) {
-        if (!isLoggedIn) {
+        if (!isLoggedIn || accountManager == null) {
             return false;
         }
-        this.password = newPassword;
-        if (accountManager != null) {
-            try (Connection conn = accountManager.getDatabaseConnection()) {
-                String sql = "UPDATE accounts SET password = ? WHERE username = ?";
-                PreparedStatement statement = conn.prepareStatement(sql);
-                statement.setString(1, newPassword);
-                statement.setString(2, login);
-                int rows = statement.executeUpdate();
-                return rows > 0;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
-            }
+        boolean ok = accountManager.editAccountPassword(this, newPassword);
+        if (ok) {
+            this.password = newPassword;
         }
-        return false;
+        return ok;
     }
 
     public boolean changeUsername(String newUsername) {
-        if (!isLoggedIn) {
+        if (!isLoggedIn || accountManager == null) {
             return false;
         }
-        if (accountManager != null) {
-            try (Connection conn = accountManager.getDatabaseConnection()) {
-                String sql = "UPDATE accounts SET login = ? WHERE login = ?";
-                PreparedStatement statement = conn.prepareStatement(sql);
-                statement.setString(1, newUsername);
-                statement.setString(2, login);
-                int rows = statement.executeUpdate();
-                if (rows > 0) {
-                    this.login = newUsername;
-                    return true;
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return false;
-            }
+        boolean ok = accountManager.editAccountUsername(this, newUsername);
+        if (ok) {
+            this.login = newUsername;
         }
-        return false;
+        return ok;
     }
     //Logic to log a user in
     //Want to ensure login/logout functionality before introducing password hashing
@@ -75,19 +52,21 @@ public class Account {
     }
     //Logic to log a user out
     public boolean logout() {
-        if (isLoggedIn) {
-            isLoggedIn = false;
-            return true;
+        if (!isLoggedIn) {
+            return false;
         }
-        return false;
+        this.isLoggedIn = false;
+        if (accountManager != null) {
+            accountManager.editInDatabase(this);
+        }
+        return true;
     }
     //Logic to request the manager to delete the account
     public boolean deleteAccount() {
-        if (accountManager != null) {
-            Account deletedAcc = accountManager.deleteAccountInDatabase(this);
-            return deletedAcc != null;
+        if (accountManager == null) {
+            return false;
         }
-        return false;
+        return accountManager.deleteInDatabase(this);
     }
     public String getLogin() {
         return login;
