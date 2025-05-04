@@ -43,7 +43,7 @@ public class TaskManager {
             pstmt.setDate(3, new java.sql.Date(task.getDate().getTime()));
             pstmt.setInt(4, task.getScore());
             pstmt.setString(5, username);
-            pstmt.setString(7, null);
+            pstmt.setString(6, null);
 
             int rowsInserted = pstmt.executeUpdate();
             return rowsInserted > 0;
@@ -62,10 +62,10 @@ public class TaskManager {
         // TO-DO: delete a task in the database
         String sql = "DELETE FROM TASK WHERE name = (?)";
 
-        try (Connection conn = db.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setString(1, project.getName());
-            db.pushProjectQuery(statement);
-            conn.close();
+        try (Connection conn = db.getConnection()){
+        PreparedStatement statement = conn.prepareStatement(sql); 
+            statement.setString(1, task.getName());
+            db.pushTaskQuery(statement);
             return true;
         } catch (SQLException exception) {
             exception.printStackTrace();
