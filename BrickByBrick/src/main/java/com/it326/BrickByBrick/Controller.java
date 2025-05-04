@@ -208,7 +208,7 @@ public class Controller
                         break;
                     case 2:
                        
-                        am.displayAverageFeeling();
+                        am.displayAverageFeelings();
                         
                         break;
                     default:
