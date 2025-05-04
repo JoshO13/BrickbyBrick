@@ -178,4 +178,18 @@ public class AccountManager implements Manager<Account> {
         ok  = createInDatabase(entry);
         return ok;
     }
+
+
+    private boolean findUser(String name){
+        try(Connection conn = database.getConnection()){
+            String sql = "SELECT username FROM ACCOUNT WHERE (username) = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, name);
+            Account account = database.retrieveAccountQuery(statement);
+            return true;
+        }catch(SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
