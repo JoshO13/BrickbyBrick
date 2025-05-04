@@ -124,9 +124,18 @@ public class AccountManager implements Manager<Account> {
 
 
     public boolean logout(String username) {
+        Account ac = null;
+        try (Connection conn = database.getConnection()) {
+            String sql = "SELECT * FROM ACCOUNT WHERE (username) = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, username);
+            ac = database.retrieveAccountQuery(statement);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
         if (account.getLogin().equals(username) && account.isLoggedIn()) {
             account.setLoggedIn(false);
-            return editInDatabase(account);
         }
         return false;
     }
