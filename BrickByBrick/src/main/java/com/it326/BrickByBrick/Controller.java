@@ -14,6 +14,7 @@ public class Controller
     private ProjectManager pm;
     private Journal journal;
     private Account acc;
+    private String username;
 
     public Controller(CMD cmd) 
     {
@@ -35,13 +36,13 @@ public class Controller
             //login
             case 1:
                 System.out.println("Enter username:");
-                String userName = sc.nextLine();
+                username = sc.nextLine();
 
                 System.out.println("Enter password:");
                 String pw = sc.nextLine();
 
                 
-                if (am.login(userName, pw)) 
+                if (am.login(username, pw)) 
                 {
                     System.out.println("Successfully logged in!\n");
                     return true;
@@ -219,7 +220,7 @@ public class Controller
                 break;
 
             case 4:
-                am.logout();
+                am.logout(username);
                 return false;
                 
 
