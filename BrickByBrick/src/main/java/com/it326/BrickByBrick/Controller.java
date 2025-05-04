@@ -17,7 +17,7 @@ public class Controller
     public Controller(CMD cmd) 
     {
         this.cmd = cmd;
-        Database db = Database.getDatabase(); // singleton pattern
+        Database db = Database.getDatabase(); 
         this.am = new AccountManager(new Handler(db));
         this.tm = new TaskManager();
         this.pm = new ProjectManager();
@@ -31,10 +31,52 @@ public class Controller
         return am;
     }
 
-    public Handler getHandler() 
+    public void generateAccountDecsions(int input)
     {
-        return new Handler(Database.getDatabase()); // used to assign to Account
+        Scanner sc = new Scanner(System.in);
+
+        switch (input) 
+        {
+            case 1:
+                System.out.println("Enter username:");
+                String userName = sc.nextLine();
+
+                System.out.println("Enter password:");
+                String pw = sc.nextLine();
+
+                Account loginAttempt = new Account(userName, pw);
+                if (loginAttempt.login(userName, pw)) 
+                {
+                    
+                    System.out.println("Successfully logged in!\n");
+                } else 
+                {
+                    System.out.println("Username/Password was incorrect. Please try again.");
+                }
+                break;
+            case 2:
+                System.out.println("Enter new username:");
+                            String newUser = sc.nextLine();
+
+                            //need logic to check if a username has already been used
+                            if (am.findUser(newUser)) 
+                            {
+                                System.out.println("Username already taken. Please try again.");
+                            } else 
+                            {
+                                System.out.println("Enter new password:");
+                                String newPw = sc.nextLine();
+                                
+                                am.createAccount(newUser, newPw);
+                            }
+                break;
+            case 3:
+
+            default:
+                System.out.println();
+        }
     }
+
 
     public void generateDecision(int input) 
     {
@@ -62,21 +104,25 @@ public class Controller
                         String dateStr = sc.nextLine();
                         Date date = Date.valueOf(dateStr); 
 
-                        tm.createTask(name, priority, date);
+                        System.out.println("Enter Priority Level:");
+                        int score = sc.nextInt();
+
+                        tm.createTask(name, date, priority, score);
                         System.out.println("Task created.");
                         break;
                     case 2:
                         
                         System.out.println("Displaying all tasks:");
 
-                        for (Task t : tm.getTasks()) {
-                            t.getTaskName();
-                        }
+                        tm.displayAllTasks();
                         
                         break;
                     case 3:
                         System.out.println("Enter task name to delete:");
                         String delTask = sc.nextLine();
+
+
+
                         tm.deleteTask(delTask);
                         System.out.println("Task deleted if it existed.");
                         break;
@@ -86,6 +132,7 @@ public class Controller
                         System.out.println("Enter task name to mark as complete:");
                         String compTask = sc.nextLine();
                         tm.completeTask(compTask);
+
                         System.out.println("Task marked as complete.");
                         break;
 
@@ -105,26 +152,15 @@ public class Controller
                         System.out.println("Enter project name:");
                         String pname = sc.nextLine();
 
-                        System.out.println("Enter date (yyyy-mm-dd):");
-                        String pdate = sc.nextLine();
 
-                        pm.createProject(pname, Date.valueOf(pdate));
+                        pm.createProject(pname);
                         System.out.println("Project created.");
                         break;
                     case 2:
                         System.out.println("Enter project name to delete:");
                         String delProject = sc.nextLine();
 
-                        // finding project then deleting
-                        boolean deleted = false;
-                        for (Project p : pm.getAllProjects()) 
-                        {
-                            if(p.getName().equals(delProject)) 
-                            {
-                                pm.deleteProject(p);
-                                deleted = true;
-                            }
-                        }
+                        boolean deleted = pm.deleteProject(delProject);
 
                         if (deleted) 
                         {
@@ -132,7 +168,6 @@ public class Controller
                         }else{
                             System.out.println("Project does not exist.");
                         }
-                        
                         
                         break;
                     default:
