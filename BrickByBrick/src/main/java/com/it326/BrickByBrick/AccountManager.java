@@ -117,6 +117,7 @@ public class AccountManager implements Manager<Account> {
         }
 
         if (account.getLogin().equals(login) && account.getPassword().equals(password)) {
+            this.account.setLogin(login);
             this.account.setLoggedIn(true);
             return true;
         }else{

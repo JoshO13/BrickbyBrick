@@ -21,6 +21,7 @@ public class TaskManager {
     private List<Task> tasks = new ArrayList<Task>();
     private Project project;
     private String oldName;
+    AccountManager am = new AccountManager();
 
     // Constructor
     public TaskManager() throws SQLException {
@@ -34,12 +35,14 @@ public class TaskManager {
      */
     public boolean createTaskInDatabase(Task task) {
         // TO-DO: create a task in the database
-        String sql = "INSERT INTO tasks (taskName, priorityLevel, date, score) VALUES (?, ?, ?, ?)";
+       String username = am.getAccount().getLogin();
+        String sql = "INSERT INTO task (name, priority, due_date, score, username_t, project) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, task.getName());
             pstmt.setDouble(2, task.getPriorityLevel());
             pstmt.setDate(3, new java.sql.Date(task.getDate().getTime()));
             pstmt.setInt(4, task.getScore());
+            pstmt.setString(5, username);
 
             int rowsInserted = pstmt.executeUpdate();
             return rowsInserted > 0;
@@ -81,6 +84,7 @@ public class TaskManager {
     public boolean createTask(String name, Date date, int priorityLevel, int score) {
         Task task = new Task(name, date, priorityLevel, score);
         tasks.add(task);
+        createTaskInDatabase(task);
         System.out.println("Task created.");
         return true;
     }
@@ -95,6 +99,7 @@ public class TaskManager {
         for (Task t : tasks) {
             if (t.getName().equals(taskName)) {
                 tasks.remove(t);
+                deleteTaskInDatabase(t);
                 return true;
             }
         }

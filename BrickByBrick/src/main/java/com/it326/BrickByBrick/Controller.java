@@ -2,6 +2,7 @@ package com.it326.BrickByBrick;
 
 import java.util.Scanner;
 import java.sql.Date;
+import java.sql.SQLException;
 
 
 
@@ -16,9 +17,12 @@ public class Controller
     private Account acc;
     private String username;
 
-    public Controller(CMD cmd) 
+    public Controller(CMD cmd) throws SQLException 
     {
-        this.cmd = cmd;      
+        this.cmd = cmd;     
+        this.am = new AccountManager(); 
+        this.tm = new TaskManager();
+        this.pm = new ProjectManager();
     }
 
     public AccountManager getAccountManager() 
@@ -59,7 +63,7 @@ public class Controller
                 String newUser = sc.nextLine();
 
                 //need logic to check if a username has already been used
-                if (am.findUser(newUser)) 
+                if (!am.findUser(newUser)) 
                 {
                     System.out.println("Username already taken. Please try again.");
                     return false;
@@ -69,7 +73,7 @@ public class Controller
                     String newPw = sc.nextLine();
                     
                     am.createAccount(newUser, newPw);
-                    return true;
+                    return false;
                 }
             
             case 3:
@@ -107,7 +111,7 @@ public class Controller
                         String dateStr = sc.nextLine();
                         Date date = Date.valueOf(dateStr); 
 
-                        System.out.println("Enter Priority Level:");
+                        System.out.println("Enter score:");
                         int score = sc.nextInt();
 
                         tm.createTask(name, date, priority, score);

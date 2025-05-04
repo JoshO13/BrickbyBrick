@@ -1,6 +1,7 @@
 package com.it326.BrickByBrick;
 
 import java.nio.file.PathMatcher;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class CMD 
@@ -10,9 +11,9 @@ public class CMD
     private boolean loop = true;
     private Controller controller;
 
-    public CMD() 
+    public CMD() throws SQLException
     {
-        this.controller = new Controller(this);
+        this.controller = new Controller(this);        
     }
 
     public void displayMenu() 
@@ -51,6 +52,7 @@ public class CMD
                 } catch (Exception e) 
                 {
                     System.out.println("Invalid input. Please enter a number.");
+                    e.printStackTrace();
 
                     // clearing invalid input
                     input.nextLine(); 
@@ -67,7 +69,6 @@ public class CMD
 
                 try {
                     int option = input.nextInt();
-                    input.nextLine(); 
 
                     switch (option) {
                         case 1:
@@ -87,6 +88,7 @@ public class CMD
                     }
                 } catch (Exception e) {
                     System.out.println("Please enter a valid number.");
+                    e.printStackTrace();
                     input.nextLine(); 
                 }
             }
@@ -101,7 +103,7 @@ public class CMD
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         CMD userInp = new CMD();
         userInp.displayMenu();
     }
