@@ -13,6 +13,7 @@ public class AccountManager implements Manager<Account> {
     private List<Account> accounts = new ArrayList<>();
     private Database database;
     private Controller controller;
+    private Journal journal;
 
     public AccountManager() throws SQLException{
         this.controller = controller;
@@ -26,6 +27,8 @@ public class AccountManager implements Manager<Account> {
             a1.setAccountManager(this);
             return a1;
         }
+        System.err.println("Failed");
+        return null;
     }
 
     /**
@@ -232,5 +235,13 @@ public class AccountManager implements Manager<Account> {
             e.printStackTrace();
             return false;
         }
+    }
+
+
+    public boolean addEntry(String content, int feeling){
+        Entry e = new Entry (content,feeling);
+        journal.addEntry(e);
+        createInDatabase(e);
+        return true;
     }
 }
