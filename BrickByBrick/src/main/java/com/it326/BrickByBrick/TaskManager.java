@@ -14,16 +14,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-import oracle.jdbc.driver.parser.util.Array;
-
 public class TaskManager {
 
     // data members
     private Database db;
     private List<Task> tasks = new ArrayList<Task>();
+    private Project project;
+    private String oldName;
 
     // Constructor
-    public TaskManager(Database db) throws SQLException {
+    public TaskManager() throws SQLException {
         db = Database.getInstance();
     }
 
@@ -54,7 +54,7 @@ public class TaskManager {
      * 
      * @return
      */
-    public boolean deleteTaskInDatabase() {
+    public boolean deleteTaskInDatabase(Task task) {
         // TO-DO: delete a task in the database
         String sql = "DELETE FROM TASK WHERE name = (?)";
 
@@ -91,12 +91,29 @@ public class TaskManager {
      * @param task
      * @return
      */
-    public void deleteTask(Task task) {
+    public boolean deleteTask(String taskName) {
         for (Task t : tasks) {
-            if (t.getName().equals(task.getName())) {
+            if (t.getName().equals(taskName)) {
                 tasks.remove(t);
-                break;
+                return true;
             }
+        }
+        return false;
+    }
+
+    public boolean editInDatabase(Task task) {
+        String newName = task.getName();
+        try (Connection conn = db.getConnection()) {
+            String sql = "UPDATE tasks SET (task_name) = (?) WHERE task_name = (?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, newName);
+            statement.setString(2, oldName);
+            db.pushTaskQuery(statement);
+            conn.close();
+            return true;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            return false;
         }
     }
 
@@ -106,12 +123,13 @@ public class TaskManager {
      * @param task
      * @return
      */
-    public boolean completeTask(Task task) {
+    public boolean completeTask(String taskName) {
+        Task task = searchTaskName(taskName);
         int taskScore = task.getScore();
         // How to do score from here
         taskScore = task.getScore() * (task.getScore() + task.getPriorityLevel() / 10);
         task.setScore(taskScore);
-        deleteTask(task);
+        deleteTask(taskName);
         System.out.println("Task completed!!");
         return true;
     }
@@ -121,12 +139,15 @@ public class TaskManager {
      * 
      * @param filename
      */
-    public void importTask(String filename) {
-        // TO-DO: Implement this method
-        // txt file
-        Task newTask = readFile(filename);
-        tasks.add(newTask);
-        System.out.println("Task imported.");
+    public boolean importTask(String filename) {
+        int oldSize = tasks.size();
+        boolean success = readFile(filename);
+        if (success && tasks.size() > oldSize) {
+            System.out.println("Task(s) imported.");
+        } else {
+            System.out.println("No new tasks imported.");
+        }
+        return success;
     }
 
     /**
@@ -135,7 +156,7 @@ public class TaskManager {
      * @param task1
      * @param task2
      */
-    public void combineTasks(Task task1, Task task2) {
+    public boolean combineTasks(Task task1, Task task2) {
         // Precondition: Must be the same day
         if (task1.getDate().equals(task2.getDate())) {
             Task newTask = new Task(task1.getName() + " & " + task2.getName(),
@@ -144,8 +165,10 @@ public class TaskManager {
             tasks.remove(task2);
             tasks.add(newTask);
             System.out.println("Tasks combined.");
+            return true;
         } else
             System.out.println("Tasks are not on the same day.");
+        return false;
     }
 
     /**
@@ -190,10 +213,14 @@ public class TaskManager {
         return result;
     }
 
-    public void shareTask(Task task) {
+    public boolean shareTask(Task task) {
         // TO-DO: Implement this method
         String filename = task.getName() + ".txt";
-        writeFile(filename);
+        Boolean fileWrittenSuccesfully = writeFile(filename);
+        if (fileWrittenSuccesfully)
+            System.out.println("Task(s) shared successfully!");
+
+        return fileWrittenSuccesfully;
     }
 
     /**
@@ -202,7 +229,7 @@ public class TaskManager {
      * 
      * @param task
      */
-    public void editTask(Task task) {
+    public boolean editTask(Task task) {
         System.out.println("What would you like to edit?");
         System.out.println("1. Name");
         System.out.println("2. Priority");
@@ -238,7 +265,9 @@ public class TaskManager {
                 System.out.println("Invalid choice. Please try again.");
                 break;
         }
+        editInDatabase(task);
         scanner.close();
+        return true;
 
     }
 
@@ -259,10 +288,11 @@ public class TaskManager {
      * 
      * @param filename
      */
-    private Task readFile(String filename) {
+    private boolean readFile(String filename) {
         // TO-DO: Implement this method
         // Need a specific format for the file
         // task should have toString method
+
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String taskName;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Adjust format to your date strings
@@ -281,13 +311,16 @@ public class TaskManager {
                 Task task = new Task(taskName, date, priority, score);
                 tasks.add(task);
             }
+            return true;
+
         } catch (IOException | java.text.ParseException e) {
             e.printStackTrace();
+            return false;
         }
-        return null;
+
     }
 
-    private void writeFile(String filename) {
+    private boolean writeFile(String filename) {
         // TO-DO: Implement this method
         // write with task toString method
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
@@ -295,8 +328,10 @@ public class TaskManager {
                 writer.write(task.toString());
                 writer.newLine(); // Add a blank line between tasks (optional)
             }
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
