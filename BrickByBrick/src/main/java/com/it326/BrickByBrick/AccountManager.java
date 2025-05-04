@@ -180,7 +180,7 @@ public class AccountManager implements Manager<Account> {
 
     public Entry retrieveEntry(LocalDate date){
         try(Connection conn = database.getConnection()){
-            String sql = "SELECT entry_date FROM ENTRY WHERE (entry_date) = ?";
+            String sql = "SELECT * FROM ENTRY WHERE (entry_date) = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setDate(1, java.sql.Date.valueOf(date));
             Entry entry2 = database.retrieveEntryQuery(statement);
