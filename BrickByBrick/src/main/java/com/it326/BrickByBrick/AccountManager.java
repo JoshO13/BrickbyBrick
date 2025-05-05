@@ -288,4 +288,14 @@ public class AccountManager implements Manager<Account> {
     public void displayAverageFeelings(){
         journal.displayFeelingScale();
     }
+
+
+    public void combineEntries(LocalDate date){
+        journal.combineAllPastEntries();
+        List<Entry> entries = journal.getEntriesByDate(date);
+        for (int i = 0; i < entries.size();i++){
+            deleteInDatabase(date);
+            createInDatabase(entries.get(i), account);
+        }
+    }
 }
