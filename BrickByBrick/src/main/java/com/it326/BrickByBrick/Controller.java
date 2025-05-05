@@ -191,7 +191,7 @@ public class Controller
                             temp1 = tm.searchTaskName(taskname2);
                             if (temp1 !=null) 
                             {
-                                tm.combineTasks(temp, temp1);
+                                tm.combineTasks(temp, temp1, acc);
                             }
                         }
 
