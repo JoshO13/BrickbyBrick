@@ -120,7 +120,7 @@ public class Controller
                         int score = sc.nextInt();
 
                         tm.createTask(name, date, priority, score, acc);
-                        System.out.println("Task created.");
+                        
                         break;
                     case 2:
                         System.out.println("Enter task name to delete:");
