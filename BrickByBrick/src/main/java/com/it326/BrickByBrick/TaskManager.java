@@ -141,12 +141,17 @@ public class TaskManager {
     public boolean completeTask(String taskName) {
         Task task = searchTaskName(taskName);
         int taskScore = task.getScore();
+
         // How to do score from here
         taskScore = task.getScore() * (task.getScore() + task.getPriorityLevel() / 10);
         task.setScore(taskScore);
-        deleteTask(taskName);
-        System.out.println("Task completed!!");
-        return true;
+        boolean success = deleteTask(taskName);
+        if (success) {
+            System.out.println("Task completed!!");
+            return true;
+        }
+        System.out.println("Task could not be completed");
+        return false;
     }
 
     /**
@@ -160,9 +165,9 @@ public class TaskManager {
         createTaskInDatabase(task, account);
         return true;
         // if (success && tasks.size() > oldSize) {
-        //     System.out.println("Task(s) imported.");
+        // System.out.println("Task(s) imported.");
         // } else {
-        //     System.out.println("No new tasks imported.");
+        // System.out.println("No new tasks imported.");
         // }
         // return success;
     }
