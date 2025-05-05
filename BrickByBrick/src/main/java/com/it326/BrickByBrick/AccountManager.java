@@ -104,7 +104,6 @@ public class AccountManager implements Manager<Account> {
         }
     }
 
-
     public boolean login(String login, String password) {
         try (Connection conn = database.getConnection()) {
             String sql = "SELECT * FROM ACCOUNT WHERE (username) = ?";
@@ -145,21 +144,20 @@ public class AccountManager implements Manager<Account> {
 
     /**
      * Updates an account password in the database
-     * @param acc - account to be updated
      * @param newPassword - new password
      * @return bool - whether the password was updated or not
      */
-    public boolean editAccountPassword(Account acc, String newPassword) {
-        if (acc == null) {
+    public boolean editAccountPassword(String newPassword) {
+        if (this.account == null) {
             return false;
         }
         String sql = "UPDATE account SET password = ? WHERE username = ?";
         try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, newPassword);
-            statement.setString(2, acc.getLogin());
+            statement.setString(2, this.account.getLogin());
             boolean ok = database.pushAccountQuery(statement);
             if (ok) {
-                acc.setPassword(newPassword);
+                this.account.setPassword(newPassword);
             }
             return ok;
         } catch (SQLException e) {
@@ -171,27 +169,30 @@ public class AccountManager implements Manager<Account> {
 
     /**
      * Updates an account username in the database
-     * @param acc - account to be updated
      * @param newUsername - new username
      * @return bool - whether the username was updated or not
      */
-    public boolean editAccountUsername(Account acc, String newUsername) {
-        if (acc == null) {
+    public boolean editAccountUsername(String newUsername) {
+        if (this.account == null) {
             return false;
         }
         String sql = "UPDATE account SET username = ? WHERE username = ?";
         try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, newUsername);
-            statement.setString(2, acc.getLogin());
+            statement.setString(2, this.account.getLogin());
             boolean ok = database.pushAccountQuery(statement);
             if (ok) {
-                acc.setLogin(newUsername);
+                this.account.setLogin(newUsername);
             }
             return ok;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
+    }
+    public void Summary() {
+        System.out.println(account);
+        displayAverageFeelings();
     }
 
 
@@ -218,7 +219,6 @@ public class AccountManager implements Manager<Account> {
 
     /**
      * Deletes an existing entry
-     * @param entry - Entry to be deleted
      * @return bool - whether the changes were successfully pushed or not
      */
     public boolean deleteInDatabase(LocalDate date) {
@@ -287,5 +287,15 @@ public class AccountManager implements Manager<Account> {
 
     public void displayAverageFeelings(){
         journal.displayFeelingScale();
+    }
+
+
+    public void combineEntries(LocalDate date){
+        journal.combineAllPastEntries();
+        List<Entry> entries = journal.getEntriesByDate(date);
+        for (int i = 0; i < entries.size();i++){
+            deleteInDatabase(date);
+            createInDatabase(entries.get(i), account);
+        }
     }
 }

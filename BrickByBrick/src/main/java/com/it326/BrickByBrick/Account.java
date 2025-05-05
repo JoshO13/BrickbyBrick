@@ -19,8 +19,11 @@ public class Account {
     public void setAccountManager(AccountManager manager) {
         this.accountManager = manager;
     }
-
-
+    @Override
+    public String toString() {
+        String output = "Username: " + this.login + "\n Password: " + this.password + "\n XP Earned: " + this.totalScore;
+        return output;
+    }
     public String getLogin() {
         return login;
     }
