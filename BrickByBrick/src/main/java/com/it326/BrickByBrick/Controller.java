@@ -16,7 +16,6 @@ public class Controller
     private Journal journal;
     private Account acc;
     private String username;
-    private Account account;
 
     public Controller(CMD cmd) throws SQLException 
     {
@@ -50,7 +49,7 @@ public class Controller
                 if (am.login(username, pw)) 
                 {
                     System.out.println("Successfully logged in!\n");
-                    account = new Account(username, pw);
+                    acc = new Account(username, pw);
                     return true;
                 } else 
                 {
@@ -120,7 +119,7 @@ public class Controller
                         System.out.println("Enter score:");
                         int score = sc.nextInt();
 
-                        tm.createTask(name, date, priority, score, account);
+                        tm.createTask(name, date, priority, score, acc);
                         System.out.println("Task created.");
                         break;
                     case 2:
@@ -188,8 +187,8 @@ public class Controller
                         if(temp != null)
                         {
                             System.out.println("Please enter the second task to combine.");
-                            taskname = sc.nextLine();
-                            temp1 = tm.searchTaskName(taskname);
+                            taskname2 = sc.nextLine();
+                            temp1 = tm.searchTaskName(taskname2);
                             if (temp1 !=null) 
                             {
                                 tm.combineTasks(temp, temp1);
@@ -214,7 +213,7 @@ public class Controller
                         String pname = sc.nextLine();
 
 
-                        pm.createProject(pname,account);
+                        pm.createProject(pname,acc);
                         System.out.println("Project created.");
                         break;
                     case 2:
@@ -250,8 +249,6 @@ public class Controller
                             System.out.println("Enter the name of the pre-existing task you would like to add to the project.");
                             taskname = sc.nextLine();
                             
-                            tempProject = pm.retrieveProject(projectName);
-                            temp = tm.searchTaskName(taskname);
 
                             if (pm.addTaskToProject(taskname, projectName)) {
                                 System.out.println("Task added successfully.");
@@ -281,7 +278,7 @@ public class Controller
 
                         // Need to get current user’s Journal instance
                         
-                        boolean entryAdded = am.addEntry(content, feeling, account);
+                        boolean entryAdded = am.addEntry(content, feeling, acc);
 
                         if (entryAdded) {
                             System.out.println("Entry added successfully.");
