@@ -177,6 +177,10 @@ public class TaskManager {
             tasks.remove(task1);
             tasks.remove(task2);
             tasks.add(newTask);
+            deleteTask(task1.getName());
+            deleteTask(task2.getName());
+            createTask(newTask.getName(), newTask.getDate(), newTask.getPriorityLevel(), newTask.getScore(),
+                    am.getAccount());
             System.out.println("Tasks combined.");
             return true;
         } else
