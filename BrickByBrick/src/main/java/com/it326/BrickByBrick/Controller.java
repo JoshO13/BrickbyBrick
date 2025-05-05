@@ -303,7 +303,7 @@ public class Controller
                 System.out.println("1.Edit Username\n2. Edit Password\n3. Account Summary\n4. Delete Account");
 
                 int manageAccount = sc.nextInt();
-
+                sc.nextLine();
                 switch (manageAccount) {
                     case 1:
                         System.out.println("Enter your new account username.");
