@@ -151,12 +151,6 @@ public class Controller
                         String compTask = sc.nextLine();
                         boolean completed = tm.completeTask(compTask);
 
-                        if (completed) 
-                        {
-                            System.out.println("Task marked as complete.");
-                        }else{
-                            System.out.println("Task could not marked as complete.");
-                        }
                         
                         break;
 
