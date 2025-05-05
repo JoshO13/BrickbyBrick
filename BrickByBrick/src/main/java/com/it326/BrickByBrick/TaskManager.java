@@ -38,7 +38,8 @@ public class TaskManager {
         // TO-DO: create a task in the database
         String username = account.getLogin();
         String sql = "INSERT INTO task (name, priority, due_date, score, username_t, project) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = db.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, task.getName());
             pstmt.setDouble(2, task.getPriorityLevel());
             pstmt.setDate(3, new java.sql.Date(task.getDate().getTime()));
@@ -46,8 +47,10 @@ public class TaskManager {
             pstmt.setString(5, username);
             pstmt.setString(6, null);
 
-            int rowsInserted = pstmt.executeUpdate();
-            return rowsInserted > 0;
+            //int rowsInserted = pstmt.executeUpdate();
+            //return rowsInserted > 0;
+            db.pushTaskQuery(pstmt);
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -122,7 +125,6 @@ public class TaskManager {
             statement.setString(1, newName);
             statement.setString(2, oldName);
             db.pushTaskQuery(statement);
-            conn.close();
             return true;
         } catch (SQLException exception) {
             exception.printStackTrace();
