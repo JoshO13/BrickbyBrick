@@ -16,7 +16,6 @@ public class Controller
     private AccountManager am;
     private TaskManager tm;
     private ProjectManager pm;
-    private Journal journal;
     private Account acc;
     private String username;
 
@@ -34,10 +33,11 @@ public class Controller
     {
         return am;
     }
-//a method that generates 
+//a method that generates the decisions for logging into a user account
     public boolean generateAccountDecsions(int input)
     {
         Scanner sc = new Scanner(System.in);
+
 
         switch (input) 
         {
@@ -81,9 +81,7 @@ public class Controller
                     am.createAccount(newUser, newPw);
                     return false;
                 }
-            
-            case 3:
-
+             
             default:
                 System.out.println("Please enter a valid choice.");
         }
@@ -93,6 +91,7 @@ public class Controller
 //a method that handles the decisions for the main menu of the program
     public boolean generateDecision(int input) 
     {
+        //declaring variables for later use and scanner
         String taskname;
         String taskname2;
         String projectName;
@@ -103,12 +102,14 @@ public class Controller
         switch (input) 
         {
             case 1: // Task Management
-                System.out.println("Task Menu: \n1. Create Task\n2. Delete Task\n3. Complete Task\n4. Edit Task\n5. Share Task\n6. Import Task\n7. Combine Tasks");
+                System.out.println("Task Menu: \n1. Create Task\n2. Delete Task\n3. Complete Task\n4. Share Task\n5. Import Task\n6. Combine Tasks");
                 int taskChoice = sc.nextInt();
                 sc.nextLine(); 
 
                 switch (taskChoice) 
                 {
+
+                    //create task
                     case 1:
                         System.out.println("Enter task name:");
                         String name = sc.nextLine();
@@ -127,6 +128,8 @@ public class Controller
                         tm.createTask(name, date, priority, score, acc);
                         
                         break;
+                        
+                    //delete Task
                     case 2:
                         System.out.println("Enter task name to delete:");
                         String delTask = sc.nextLine();
@@ -142,7 +145,7 @@ public class Controller
                         
                         break;
 
-
+                    //mark task as complete
                     case 3:
                         System.out.println("Enter task name to mark as complete:");
                         String compTask = sc.nextLine();
@@ -157,18 +160,8 @@ public class Controller
                         
                         break;
 
+                    //share task
                     case 4:
-                        System.out.println("Please enter the name of the task you would like to edit.");
-                        taskname = sc.nextLine();
-
-                        temp = tm.searchTaskName(taskname);
-
-                        if (tm.editTask(temp)) {
-                            System.out.println("Task edited successfully.");
-                        }
-                       
-                        break;
-                    case 5:
                         System.out.println("Please enter the name of the task you would like to share.");
                         taskname = sc.nextLine();
 
@@ -178,14 +171,17 @@ public class Controller
                             tm.shareTask(temp);
                         }
                         break;
-                    
-                    case 6:
+
+                    //import task
+                    case 5:
                         System.out.println("Please enter the filename of the task you would like to import.");
                         String filename = sc.nextLine();
 
                         tm.importTask(filename, acc);
                         break;
-                    case 7:
+
+                        //combine tasks
+                    case 6:
                         System.out.println("Please enter a task to combine.");
                         taskname = sc.nextLine();
                         temp = tm.searchTaskName(taskname);
@@ -213,6 +209,7 @@ public class Controller
 
                 switch (projChoice) 
                 {
+                    //create project
                     case 1:
                         System.out.println("Enter project name:");
                         String pname = sc.nextLine();
@@ -221,6 +218,8 @@ public class Controller
                         pm.createProject(pname,acc);
                         
                         break;
+
+                        //delete Project
                     case 2:
                         System.out.println("Enter project name to delete:");
                         String delProject = sc.nextLine();
@@ -234,6 +233,7 @@ public class Controller
                             System.out.println("Project does not exist.");
                         }
                         
+                        //edit project
                         case 3:
                             System.out.println("Enter the name of the project you want to edit.");
                             projectName = sc.nextLine();
@@ -247,21 +247,6 @@ public class Controller
                             }
                         break;
 
-                        case 4: 
-                            System.out.println("Enter the name of the Project you would like to add to.");
-                            projectName = sc.nextLine();
-
-                            System.out.println("Enter the name of the pre-existing task you would like to add to the project.");
-                            taskname = sc.nextLine();
-                            
-
-                            if (pm.addTaskToProject(taskname, projectName)) {
-                                System.out.println("Task added successfully.");
-                            }else{
-                                System.out.println("Task could not be added.");
-                            }
-
-
                     default:
                         System.out.println("Invalid option.");
                 }
@@ -274,6 +259,8 @@ public class Controller
 
                 switch (journalChoice) 
                 {
+
+                    //add entry
                     case 1:
                         System.out.println("Enter your journal content:");
                         String content = sc.nextLine();
@@ -292,6 +279,8 @@ public class Controller
                         }
                         
                         break;
+
+                        //display average feelings
                     case 2:
                        
                         am.displayAverageFeelings();
@@ -305,53 +294,34 @@ public class Controller
             case 4:
                 
                 String username1;
-                System.out.println("1.Edit Username\n2. Edit Password\n3. Delete Account\n4. Account Summary");
+                System.out.println("1.Edit Password\n2. Account Summary");
 
                 int manageAccount = sc.nextInt();
                 sc.nextLine();
                 switch (manageAccount) {
+                    
+                    //edit password
                     case 1:
-                        System.out.println("Enter your new account username.");
-                        username1 = sc.nextLine();
-
-                        if (am.editAccountUsername(username1)) {
-                            System.out.println("Account username successfully changed.");
-                        }else{
-                            System.out.println("Account username could not be changed.");
-                        }
-                        break;
-                    case 2:
                         System.out.println("Enter your new account password.");
                         username1 = sc.nextLine();
 
                         if (am.editAccountPassword(username1)) {
-                            System.out.println("Account username successfully changed.");
+                            System.out.println("Account password successfully changed.");
                         }else{
-                            System.out.println("Account username could not be changed.");
+                            System.out.println("Account password could not be changed.");
                         }
                         
-                        break;
-                    case 3:
-                        System.out.println("Deleting account...");
+                        break;                       
 
-                        boolean delete = am.deleteAccount(username);
-
-                        if (delete) {
-                            System.out.println("Account has been deleted.");
-                            return false;
-                        }
-
-                        System.out.println("The account could not be deleted");
-
-                        
-
-                    case 4:
+                    //account summary
+                    case 2:
                         am.Summary();
                         break;
                     default:
                         System.out.println("Please enter a valid choice!");
                 }
 
+            //logout of the account
             case 5:
                 am.logout(username);
                 return false;
