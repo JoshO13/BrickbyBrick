@@ -159,7 +159,8 @@ public class AccountManager implements Manager<Account> {
             return false;
         }
         String sql = "UPDATE account SET password1 = ? WHERE username = ?";
-        try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
+        try (Connection conn = database.getConnection()){
+            PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, newPassword);
             statement.setString(2, this.account.getLogin());
             boolean ok = database.pushAccountQuery(statement);
@@ -171,8 +172,9 @@ public class AccountManager implements Manager<Account> {
             e.printStackTrace();
             return false;
         }
+     }
 
-    }
+    
 
     /**
      * Updates an account username in the database
