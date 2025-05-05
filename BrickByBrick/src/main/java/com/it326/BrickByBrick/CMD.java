@@ -65,7 +65,7 @@ public class CMD
             while (loginAttempt) 
             {
                 System.out.println("\nMain Menu:");
-                System.out.println("1. Manage Tasks\n2. Manage Projects\n3. Manage Journal\n4. Logout");
+                System.out.println("1. Manage Tasks\n2. Manage Projects\n3. Manage Journal\n4.Manage Account\n5. Logout");
 
                 try {
                     int option = input.nextInt();
