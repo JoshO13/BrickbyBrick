@@ -145,6 +145,7 @@ public class TaskManager {
         // How to do score from here
         taskScore = task.getScore() * (task.getScore() + task.getPriorityLevel() / 10);
         task.setScore(taskScore);
+        am.getAccount().setTotalScore(taskScore);
         boolean success = deleteTask(taskName);
         if (success) {
             System.out.println("Task completed!!");
