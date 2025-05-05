@@ -20,6 +20,7 @@ public class TaskManager {
     // data members
     private Database db;
     private List<Task> tasks = new ArrayList<Task>();
+    private Project project;
     private String oldName;
     AccountManager am = new AccountManager();
 
@@ -140,18 +141,25 @@ public class TaskManager {
     public boolean completeTask(String taskName) {
         Task task = searchTaskName(taskName);
         int taskScore = task.getScore();
-
         // How to do score from here
-        taskScore = task.getScore() + (task.getScore() + task.getPriorityLevel() / 10);
+        taskScore = task.getScore() * (task.getScore() + task.getPriorityLevel() / 10);
         task.setScore(taskScore);
-        am.getAccount().setTotalScore(taskScore);
-        boolean success = deleteTask(taskName);
-        if (success) {
-            System.out.println("Task completed!!");
-            return true;
+        deleteTask(taskName);
+        System.out.println("Task completed!!");
+        return true;
+    }
+
+    /**
+     * method to print all tasks
+     */
+    public void printAllTasks() {
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks available.");
+            return;
         }
-        System.out.println("Task could not be completed");
-        return false;
+        for (Task task : tasks) {
+            System.out.println(task.toString());
+        }
     }
 
     /**
