@@ -202,7 +202,7 @@ public class Controller
                 break;
 
             case 2: // Project Management
-                System.out.println("Project Menu: \n1. Create Project\n2. Delete Project\n3. Edit Project\n4.Add Task to Project");
+                System.out.println("Project Menu: \n1. Create Project\n2. Delete Project\n3. Edit Project\n4. Add Task to Project");
                 int projChoice = sc.nextInt();
                 sc.nextLine();
 
@@ -214,7 +214,7 @@ public class Controller
 
 
                         pm.createProject(pname,acc);
-                        System.out.println("Project created.");
+                        
                         break;
                     case 2:
                         System.out.println("Enter project name to delete:");
@@ -298,9 +298,11 @@ public class Controller
                 break;
 
             case 4:
-                int manageAccount = sc.nextInt();
+                
                 String username1;
                 System.out.println("1.Edit Username\n2. Edit Password\n3. Account Summary\n4. Delete Account");
+
+                int manageAccount = sc.nextInt();
 
                 switch (manageAccount) {
                     case 1:
