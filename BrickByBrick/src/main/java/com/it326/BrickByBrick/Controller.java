@@ -203,7 +203,7 @@ public class Controller
                 break;
 
             case 2: // Project Management
-                System.out.println("Project Menu: \n1. Create Project\n2. Delete Project\n3. Edit Task\n4.Add Task to Project");
+                System.out.println("Project Menu: \n1. Create Project\n2. Delete Project\n3. Edit Project\n4.Add Task to Project");
                 int projChoice = sc.nextInt();
                 sc.nextLine();
 
@@ -328,14 +328,18 @@ public class Controller
                         
                         break;
                     case 3:
-                        
-                        
-                        break;
+                        System.out.println("Deleting account...");
+
+                        am.deleteAccount(username);
+
+                        System.out.println("Account has been deleted.");
+                        return false;
+
                     case 4:
-                        
+                        am.Summary();
                         break;
                     default:
-                        throw new AssertionError();
+                        System.out.println("Please enter a valid choice!");
                 }
 
             case 5:
