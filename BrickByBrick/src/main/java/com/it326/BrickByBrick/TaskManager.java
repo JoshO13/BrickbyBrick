@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -35,7 +36,7 @@ public class TaskManager {
      */
     public boolean createTaskInDatabase(Task task, Account account) {
         // TO-DO: create a task in the database
-       String username = account.getLogin();
+        String username = account.getLogin();
         String sql = "INSERT INTO task (name, priority, due_date, score, username_t, project) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, task.getName());
@@ -43,7 +44,7 @@ public class TaskManager {
             pstmt.setDate(3, new java.sql.Date(task.getDate().getTime()));
             pstmt.setInt(4, task.getScore());
             pstmt.setString(5, username);
-            pstmt.setString(7, null);
+            pstmt.setString(6, null);
 
             int rowsInserted = pstmt.executeUpdate();
             return rowsInserted > 0;
@@ -62,10 +63,10 @@ public class TaskManager {
         // TO-DO: delete a task in the database
         String sql = "DELETE FROM TASK WHERE name = (?)";
 
-        try (Connection conn = db.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setString(1, project.getName());
-            db.pushProjectQuery(statement);
-            conn.close();
+        try (Connection conn = db.getConnection()) {
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, task.getName());
+            db.pushTaskQuery(statement);
             return true;
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -97,14 +98,20 @@ public class TaskManager {
      * @return
      */
     public boolean deleteTask(String taskName) {
-        for (Task t : tasks) {
+        boolean flag = false;
+        Iterator<Task> iterator = tasks.iterator();
+        while (iterator.hasNext()) {
+            Task t = iterator.next();
             if (t.getName().equals(taskName)) {
-                tasks.remove(t);
+                iterator.remove();
                 deleteTaskInDatabase(t);
-                return true;
+
+                flag = true;
             }
+
         }
-        return false;
+        return flag;
+
     }
 
     public boolean editInDatabase(Task task) {
@@ -225,7 +232,8 @@ public class TaskManager {
         Boolean fileWrittenSuccesfully = writeFile(filename);
         if (fileWrittenSuccesfully)
             System.out.println("Task(s) shared successfully!");
-
+        else
+            System.out.println("Task was not able to be shared");
         return fileWrittenSuccesfully;
     }
 
@@ -286,7 +294,12 @@ public class TaskManager {
     public void copyTask(Task task) throws CloneNotSupportedException {
         Task newTask = (Task) task.clone(task);
         tasks.add(newTask);
-        System.out.println("Task copied.");
+        boolean success = editTask(task);
+        if (success)
+            System.out.println("Task copied.");
+        else
+            System.out.println("Task was not able to be copied");
+
     }
 
     /**
