@@ -10,7 +10,6 @@ import java.util.List;
 
 public class AccountManager implements Manager<Account> {
     private Account account;
-    private List<Account> accounts = new ArrayList<>();
     private Database database;
     private Controller controller;
     private Journal journal;
@@ -24,7 +23,6 @@ public class AccountManager implements Manager<Account> {
         Account a1 = new Account(username, password);
         boolean ok = createInDatabase(a1, a1);
         if (ok) {
-            accounts.add(a1);
             a1.setAccountManager(this);
             return a1;
         }
@@ -81,6 +79,15 @@ public class AccountManager implements Manager<Account> {
             e.printStackTrace();
             return false;
         }
+    }
+    public boolean deleteAccount(String username) {
+        if (username == null || username.isEmpty()) {
+            return false;
+        }
+        Account dummy = new Account(username,"");
+        dummy.setAccountManager(this);
+        boolean ok = deleteInDatabase(dummy);
+        return ok;
     }
 
     /**
