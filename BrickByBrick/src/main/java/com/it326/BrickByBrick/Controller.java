@@ -300,7 +300,7 @@ public class Controller
             case 4:
                 
                 String username1;
-                System.out.println("1.Edit Username\n2. Edit Password\n3. Account Summary\n4. Delete Account");
+                System.out.println("1.Edit Username\n2. Edit Password\n3. Delete Account\n4. Account Summary");
 
                 int manageAccount = sc.nextInt();
                 sc.nextLine();
