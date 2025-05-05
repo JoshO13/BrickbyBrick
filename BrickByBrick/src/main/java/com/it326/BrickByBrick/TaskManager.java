@@ -171,7 +171,7 @@ public class TaskManager {
      * @param task1
      * @param task2
      */
-    public boolean combineTasks(Task task1, Task task2) {
+    public boolean combineTasks(Task task1, Task task2, Account acc) {
         // Precondition: Must be the same day
         if (task1.getDate().equals(task2.getDate())) {
             Task newTask = new Task(task1.getName() + " & " + task2.getName(),
@@ -181,8 +181,7 @@ public class TaskManager {
             tasks.add(newTask);
             deleteTask(task1.getName());
             deleteTask(task2.getName());
-            createTask(newTask.getName(), newTask.getDate(), newTask.getPriorityLevel(), newTask.getScore(),
-                    am.getAccount());
+            createTask(newTask.getName(), newTask.getDate(), newTask.getPriorityLevel(), newTask.getScore(), acc);
             System.out.println("Tasks combined.");
             return true;
         } else
