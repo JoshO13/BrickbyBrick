@@ -154,15 +154,17 @@ public class TaskManager {
      * 
      * @param filename
      */
-    public boolean importTask(String filename) {
+    public boolean importTask(String filename, Account account) {
         int oldSize = tasks.size();
-        boolean success = readFile(filename);
-        if (success && tasks.size() > oldSize) {
-            System.out.println("Task(s) imported.");
-        } else {
-            System.out.println("No new tasks imported.");
-        }
-        return success;
+        Task task = readFile(filename);
+        createTaskInDatabase(task, account);
+        return true;
+        // if (success && tasks.size() > oldSize) {
+        //     System.out.println("Task(s) imported.");
+        // } else {
+        //     System.out.println("No new tasks imported.");
+        // }
+        // return success;
     }
 
     /**
@@ -312,7 +314,7 @@ public class TaskManager {
      * 
      * @param filename
      */
-    private boolean readFile(String filename) {
+    private Task readFile(String filename) {
         // TO-DO: Implement this method
         // Need a specific format for the file
         // task should have toString method
@@ -346,12 +348,13 @@ public class TaskManager {
 
                 Task task = new Task(taskName, date, priority, score);
                 tasks.add(task);
+                return task;
             }
-            return true;
+            return null;
 
         } catch (IOException | java.text.ParseException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

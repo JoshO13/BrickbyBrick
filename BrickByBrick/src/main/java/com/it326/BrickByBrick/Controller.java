@@ -1,3 +1,5 @@
+//what works 
+
 package com.it326.BrickByBrick;
 
 import java.util.Scanner;
@@ -5,10 +7,11 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 
-
+//controller class that checks the decisions given by the CMD class inputted by the user
 public class Controller 
 {
 
+//declairing objects to later be used by the program
     private CMD cmd;
     private AccountManager am;
     private TaskManager tm;
@@ -17,6 +20,8 @@ public class Controller
     private Account acc;
     private String username;
 
+
+//default constructior that initailizes the earlier declared objects 
     public Controller(CMD cmd) throws SQLException 
     {
         this.cmd = cmd;     
@@ -29,7 +34,7 @@ public class Controller
     {
         return am;
     }
-
+//a method that generates 
     public boolean generateAccountDecsions(int input)
     {
         Scanner sc = new Scanner(System.in);
@@ -85,7 +90,7 @@ public class Controller
         return false;
     }
 
-
+//a method that handles the decisions for the main menu of the program
     public boolean generateDecision(int input) 
     {
         String taskname;
@@ -178,7 +183,7 @@ public class Controller
                         System.out.println("Please enter the filename of the task you would like to import.");
                         String filename = sc.nextLine();
 
-                        tm.importTask(filename);
+                        tm.importTask(filename, acc);
                         break;
                     case 7:
                         System.out.println("Please enter a task to combine.");
