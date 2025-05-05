@@ -67,7 +67,7 @@ public class AccountManager implements Manager<Account> {
         if (acc == null) {
             return false;
         }
-        String sql = "DELETE FROM accounts WHERE username = ?";
+        String sql = "DELETE FROM account WHERE username = ?";
         try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, acc.getLogin());
             boolean ok = database.pushAccountQuery(statement);
@@ -99,7 +99,7 @@ public class AccountManager implements Manager<Account> {
         if (acc == null) {
             return false;
         }
-        String sql = "UPDATE account SET password = ?, total_score = ? WHERE username = ?";
+        String sql = "UPDATE account SET password1 = ?, total_score = ? WHERE username = ?";
         try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, acc.getPassword());
             statement.setInt(2, acc.getTotalScore());
@@ -186,7 +186,8 @@ public class AccountManager implements Manager<Account> {
             return false;
         }
         String sql = "UPDATE account SET username = ? WHERE username = ?";
-        try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
+        try (Connection conn = database.getConnection()){
+            PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, newUsername);
             statement.setString(2, this.account.getLogin());
             boolean ok = database.pushAccountQuery(statement);

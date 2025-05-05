@@ -74,6 +74,7 @@ public class ProjectManager implements Manager<Project> {
      * @param project
      */
     public boolean editInDatabase(Project p) {
+        System.out.println("test");
         String newName = p.getName();
                 try (Connection conn = db.getConnection()) {
             String sql = "UPDATE project SET (project_name) = (?) WHERE project_name = (?)";
@@ -81,6 +82,7 @@ public class ProjectManager implements Manager<Project> {
             statement.setString(1, newName);
             statement.setString(2, oldName);
             db.pushProjectQuery(statement);
+            System.out.println("test2");
             return true;
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -177,7 +179,6 @@ public class ProjectManager implements Manager<Project> {
                 break;
         }
         editInDatabase(project);
-        scanner.close();
         return true;
     }
     /**

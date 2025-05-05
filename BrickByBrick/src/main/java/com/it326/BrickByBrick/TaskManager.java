@@ -38,7 +38,8 @@ public class TaskManager {
         // TO-DO: create a task in the database
         String username = account.getLogin();
         String sql = "INSERT INTO task (name, priority, due_date, score, username_t, project) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = db.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, task.getName());
             pstmt.setDouble(2, task.getPriorityLevel());
             pstmt.setDate(3, new java.sql.Date(task.getDate().getTime()));
@@ -46,8 +47,10 @@ public class TaskManager {
             pstmt.setString(5, username);
             pstmt.setString(6, null);
 
-            int rowsInserted = pstmt.executeUpdate();
-            return rowsInserted > 0;
+            // int rowsInserted = pstmt.executeUpdate();
+            // return rowsInserted > 0;
+            db.pushTaskQuery(pstmt);
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -122,7 +125,6 @@ public class TaskManager {
             statement.setString(1, newName);
             statement.setString(2, oldName);
             db.pushTaskQuery(statement);
-            conn.close();
             return true;
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -169,7 +171,7 @@ public class TaskManager {
      * @param task1
      * @param task2
      */
-    public boolean combineTasks(Task task1, Task task2) {
+    public boolean combineTasks(Task task1, Task task2, Account acc) {
         // Precondition: Must be the same day
         if (task1.getDate().equals(task2.getDate())) {
             Task newTask = new Task(task1.getName() + " & " + task2.getName(),
@@ -179,8 +181,7 @@ public class TaskManager {
             tasks.add(newTask);
             deleteTask(task1.getName());
             deleteTask(task2.getName());
-            createTask(newTask.getName(), newTask.getDate(), newTask.getPriorityLevel(), newTask.getScore(),
-                    am.getAccount());
+            createTask(newTask.getName(), newTask.getDate(), newTask.getPriorityLevel(), newTask.getScore(), acc);
             System.out.println("Tasks combined.");
             return true;
         } else
@@ -230,15 +231,15 @@ public class TaskManager {
         return result;
     }
 
+    // TO-DO: Implement this method
     public boolean shareTask(Task task) {
-        // TO-DO: Implement this method
         String filename = task.getName() + ".txt";
-        Boolean fileWrittenSuccesfully = writeFile(filename);
-        if (fileWrittenSuccesfully)
-            System.out.println("Task(s) shared successfully!");
+        boolean fileWrittenSuccessfully = writeFile(filename, task);
+        if (fileWrittenSuccessfully)
+            System.out.println("Task shared successfully!");
         else
             System.out.println("Task was not able to be shared");
-        return fileWrittenSuccesfully;
+        return fileWrittenSuccessfully;
     }
 
     /**
@@ -317,20 +318,32 @@ public class TaskManager {
         // task should have toString method
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String taskName;
+            String line;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Adjust format to your date strings
-            while ((taskName = reader.readLine()) != null) {
-                String dateLine = reader.readLine();
-                String priorityLine = reader.readLine();
-                String scoreLine = reader.readLine();
-                if (dateLine == null || priorityLine == null || scoreLine == null) {
-                    break; // Incomplete task entry
-                }
-                Date date = sdf.parse(dateLine);
-                int priority = Integer.parseInt(priorityLine);
-                int score = Integer.parseInt(scoreLine);
+            while ((line = reader.readLine()) != null) {
+                int curlyBrace = line.indexOf('{');
+                if (curlyBrace == -1)
+                    continue; // Skip malformed lines
 
-                // Assuming default difficultyLevel as 0, adjust if needed
+                String taskName = line.substring(0, curlyBrace).trim();
+                String attributes = line.substring(curlyBrace + 1, line.indexOf('}')).trim();
+                int priority = 0;
+                Date date = null;
+                int score = 0;
+
+                String[] parts = attributes.split(",");
+                for (String part : parts) {
+                    part = part.trim();
+                    if (part.startsWith("Priority Level=")) {
+                        priority = Integer.parseInt(part.substring("Priority Level=".length()).trim());
+                    } else if (part.startsWith("Due Date=")) {
+                        String dateStr = part.substring("Due Date=".length()).trim();
+                        date = sdf.parse(dateStr);
+                    } else if (part.startsWith("Score=")) {
+                        score = Integer.parseInt(part.substring("Score=".length()).trim());
+                    }
+                }
+
                 Task task = new Task(taskName, date, priority, score);
                 tasks.add(task);
             }
@@ -340,17 +353,14 @@ public class TaskManager {
             e.printStackTrace();
             return false;
         }
-
     }
 
-    private boolean writeFile(String filename) {
+    private boolean writeFile(String filename, Task task) {
         // TO-DO: Implement this method
         // write with task toString method
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            for (Task task : tasks) {
-                writer.write(task.toString());
-                writer.newLine(); // Add a blank line between tasks (optional)
-            }
+            writer.write(task.toString());
+            writer.newLine();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
