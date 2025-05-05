@@ -310,7 +310,7 @@ public class Controller
                         System.out.println("Enter your new account username.");
                         username1 = sc.nextLine();
 
-                        if (am.editAccountUsername(acc, username1)) {
+                        if (am.editAccountUsername(username1)) {
                             System.out.println("Account username successfully changed.");
                         }else{
                             System.out.println("Account username could not be changed.");
@@ -320,7 +320,7 @@ public class Controller
                         System.out.println("Enter your new account password.");
                         username1 = sc.nextLine();
 
-                        if (am.editAccountPassword(acc, username1)) {
+                        if (am.editAccountPassword(username1)) {
                             System.out.println("Account username successfully changed.");
                         }else{
                             System.out.println("Account username could not be changed.");
