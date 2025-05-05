@@ -139,19 +139,15 @@ public class TaskManager {
      */
     public boolean completeTask(String taskName) {
         Task task = searchTaskName(taskName);
-        if (task == null) {
-            System.out.println("Task not found: " + taskName);
-            return false;
-        }
         int taskScore = task.getScore();
-        int bonus = task.getPriorityLevel() / 10; // Example bonus calculation
-        int earnedScore = taskScore + bonus;
-        int currentTotal = am.getAccount().getTotalScore();
-        am.getAccount().setTotalScore(currentTotal + earnedScore);
 
+        // How to do score from here
+        taskScore = task.getScore() + (task.getScore() + task.getPriorityLevel() / 10);
+        task.setScore(taskScore);
+        am.getAccount().setTotalScore(taskScore);
         boolean success = deleteTask(taskName);
         if (success) {
-            System.out.println("Task completed!! Earned " + earnedScore + " points.");
+            System.out.println("Task completed!!");
             return true;
         }
         System.out.println("Task could not be completed");
