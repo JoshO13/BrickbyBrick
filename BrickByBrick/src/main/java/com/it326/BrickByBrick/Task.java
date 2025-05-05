@@ -64,11 +64,10 @@ public class Task implements Cloneable {
     }
 
     public String toString() {
-        return "Task{" +
-                "taskName='" + taskName + '\'' +
-                ", priorityLevel=" + priorityLevel +
-                ", date=" + date +
-                ", score=" + score +
+        return taskName + "{" +
+                " Priority Level= " + priorityLevel +
+                ", Due Date= " + date +
+                ", Score= " + score +
                 '}';
     }
 
