@@ -19,6 +19,13 @@ public class AccountManager implements Manager<Account> {
         this.database = Database.getInstance();
         this.journal = new Journal();
     }
+
+    /**
+     * Method to create an account locally, and uses createInDatabase as a helper to create it in the database
+     * @param username - username
+     * @param password - password
+     * @return account object created
+     */
     public Account createAccount(String username, String password) {
         Account a1 = new Account(username, password);
         boolean ok = createInDatabase(a1, a1);
@@ -80,6 +87,12 @@ public class AccountManager implements Manager<Account> {
             return false;
         }
     }
+
+    /**
+     * Method to delete an account locally, and uses deleteInDatabase as a helper
+     * @param username - username of account to be deleted
+     * @return bool - created or not
+     */
     public boolean deleteAccount(String username) {
         if (username == null || username.isEmpty()) {
             return false;
@@ -111,6 +124,12 @@ public class AccountManager implements Manager<Account> {
         }
     }
 
+    /**
+     * Method to login to an account
+     * @param login - username to login
+     * @param password - password to login
+     * @return bool - logged in or not
+     */
     public boolean login(String login, String password) {
         try (Connection conn = database.getConnection()) {
             String sql = "SELECT * FROM ACCOUNT WHERE (username) = ?";
@@ -131,7 +150,11 @@ public class AccountManager implements Manager<Account> {
         }
     }
 
-
+    /**
+     * Method to logout of an account
+     * @param username - username to be logged out
+     * @return bool - logged out or not
+     */
     public boolean logout(String username) {
         try (Connection conn = database.getConnection()) {
             String sql = "SELECT * FROM ACCOUNT WHERE (username) = ?";
@@ -256,7 +279,11 @@ public class AccountManager implements Manager<Account> {
         return ok;
     }
 
-
+    /**
+     * Method to retrieve a journal entry
+     * @param date - primary key to select an entry
+     * @return - returns the entry
+     */
     public Entry retrieveEntry(LocalDate date){
         try(Connection conn = database.getConnection()){
             String sql = "SELECT * FROM ENTRY WHERE (entry_date) = ?";
@@ -270,10 +297,20 @@ public class AccountManager implements Manager<Account> {
         }
 
     }
+
+    /**
+     * Method ot retrieve acc
+     * @return - account
+     */
     public Account getAccount() {
         return this.account;
     }
 
+    /**
+     * Method to retrieve an account
+     * @param name - username to search for
+     * @return bool - account found or not
+     */
     public boolean findUser(String name){
         try(Connection conn = database.getConnection()){
             String sql = "SELECT username FROM ACCOUNT WHERE (username) = ?";
@@ -287,7 +324,13 @@ public class AccountManager implements Manager<Account> {
         }
     }
 
-
+    /**
+     * Method to add new entry
+     * @param content - content of the journal entry
+     * @param feeling - feeling of that day
+     * @param account - account to link to the entry
+     * @return bool - entry added or not
+     */
     public boolean addEntry(String content, int feeling, Account account){
         Entry e = new Entry (content,feeling);
         journal.addEntry(e);
@@ -295,11 +338,17 @@ public class AccountManager implements Manager<Account> {
         return true;
     }
 
+    /**
+     * Displays average feeling
+     */
     public void displayAverageFeelings(){
         journal.displayFeelingScale();
     }
 
-
+    /**
+     * Combines journal entries
+     * @param date - primary key to combine entries
+     */
     public void combineEntries(LocalDate date){
         journal.combineAllPastEntries();
         List<Entry> entries = journal.getEntriesByDate(date);
