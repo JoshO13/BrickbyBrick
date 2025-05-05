@@ -102,7 +102,7 @@ public class Controller
         switch (input) 
         {
             case 1: // Task Management
-                System.out.println("Task Menu: \n1. Create Task\n2. Delete Task\n3. Complete Task\n4. Share Task\n5. Import Task\n6. Combine Tasks");
+                System.out.println("Task Menu: \n1. Create Task\n2. Delete Task\n3. Complete Task\n4. Share Task\n5. Import Task\n6. Combine Tasks\n7. Show all Tasks");
                 int taskChoice = sc.nextInt();
                 sc.nextLine(); 
 
@@ -151,7 +151,7 @@ public class Controller
                         String compTask = sc.nextLine();
                         boolean completed = tm.completeTask(compTask);
 
-                        
+            
                         break;
 
                     //share task
@@ -189,6 +189,9 @@ public class Controller
                                 tm.combineTasks(temp, temp1, acc);
                             }
                         }
+
+                    case 7: 
+                        tm.printAllTasks();
 
                         break;
                     default:
