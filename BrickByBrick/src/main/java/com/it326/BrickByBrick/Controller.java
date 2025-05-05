@@ -89,13 +89,16 @@ public class Controller
 
     public boolean generateDecision(int input) 
     {
-
+        String taskname;
+        String taskname2;
+        Task temp;
+        Task temp1;
         Scanner sc = new Scanner(System.in);
 
         switch (input) 
         {
             case 1: // Task Management
-                System.out.println("Task Menu: \n1. Create Task\n2. Delete Task\n3. Complete Task");
+                System.out.println("Task Menu: \n1. Create Task\n2. Delete Task\n3. Complete Task\n4. Edit Task\n5.Share Task\n6. Import Task");
                 int taskChoice = sc.nextInt();
                 sc.nextLine(); 
 
@@ -151,6 +154,50 @@ public class Controller
                         
                         break;
 
+                    case 4:
+                        System.out.println("Please enter the name of the task you would like to edit.");
+                        taskname = sc.nextLine();
+
+                        temp = tm.searchTaskName(taskname);
+
+                        if (tm.editTask(temp)) {
+                            System.out.println("Task edited successfully.");
+                        }
+                       
+                        break;
+                    case 5:
+                        System.out.println("Please enter the name of the task you would like to share.");
+                        taskname = sc.nextLine();
+
+                        temp = tm.searchTaskName(taskname);
+
+                        if (temp != null) {
+                            tm.shareTask(temp);
+                        }
+                        break;
+                    
+                    case 6:
+                        System.out.println("Please enter the filename of the task you would like to import.");
+                        String filename = sc.nextLine();
+
+                        tm.importTask(filename);
+                        break;
+                    case 7:
+                        System.out.println("Please enter a task to combine.");
+                        taskname = sc.nextLine();
+                        temp = tm.searchTaskName(taskname);
+                        if(temp != null)
+                        {
+                            System.out.println("Please enter the second task to combine.");
+                            taskname = sc.nextLine();
+                            temp1 = tm.searchTaskName(taskname);
+                            if (temp1 !=null) 
+                            {
+                                tm.combineTasks(temp, temp1);
+                            }
+                        }
+
+                        break;
                     default:
                         System.out.println("Invalid option.");
                 }
