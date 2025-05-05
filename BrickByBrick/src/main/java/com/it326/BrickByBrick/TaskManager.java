@@ -230,15 +230,15 @@ public class TaskManager {
         return result;
     }
 
+    // TO-DO: Implement this method
     public boolean shareTask(Task task) {
-        // TO-DO: Implement this method
         String filename = task.getName() + ".txt";
-        Boolean fileWrittenSuccesfully = writeFile(filename);
-        if (fileWrittenSuccesfully)
-            System.out.println("Task(s) shared successfully!");
+        boolean fileWrittenSuccessfully = writeFile(filename, task);
+        if (fileWrittenSuccessfully)
+            System.out.println("Task shared successfully!");
         else
             System.out.println("Task was not able to be shared");
-        return fileWrittenSuccesfully;
+        return fileWrittenSuccessfully;
     }
 
     /**
@@ -343,14 +343,12 @@ public class TaskManager {
 
     }
 
-    private boolean writeFile(String filename) {
+    private boolean writeFile(String filename, Task task) {
         // TO-DO: Implement this method
         // write with task toString method
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            for (Task task : tasks) {
-                writer.write(task.toString());
-                writer.newLine(); // Add a blank line between tasks (optional)
-            }
+            writer.write(task.toString());
+            writer.newLine();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
