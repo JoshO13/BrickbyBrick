@@ -47,8 +47,8 @@ public class TaskManager {
             pstmt.setString(5, username);
             pstmt.setString(6, null);
 
-            //int rowsInserted = pstmt.executeUpdate();
-            //return rowsInserted > 0;
+            // int rowsInserted = pstmt.executeUpdate();
+            // return rowsInserted > 0;
             db.pushTaskQuery(pstmt);
             return true;
         } catch (SQLException e) {
@@ -319,20 +319,32 @@ public class TaskManager {
         // task should have toString method
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String taskName;
+            String line;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Adjust format to your date strings
-            while ((taskName = reader.readLine()) != null) {
-                String dateLine = reader.readLine();
-                String priorityLine = reader.readLine();
-                String scoreLine = reader.readLine();
-                if (dateLine == null || priorityLine == null || scoreLine == null) {
-                    break; // Incomplete task entry
-                }
-                Date date = sdf.parse(dateLine);
-                int priority = Integer.parseInt(priorityLine);
-                int score = Integer.parseInt(scoreLine);
+            while ((line = reader.readLine()) != null) {
+                int curlyBrace = line.indexOf('{');
+                if (curlyBrace == -1)
+                    continue; // Skip malformed lines
 
-                // Assuming default difficultyLevel as 0, adjust if needed
+                String taskName = line.substring(0, curlyBrace).trim();
+                String attributes = line.substring(curlyBrace + 1, line.indexOf('}')).trim();
+                int priority = 0;
+                Date date = null;
+                int score = 0;
+
+                String[] parts = attributes.split(",");
+                for (String part : parts) {
+                    part = part.trim();
+                    if (part.startsWith("Priority Level=")) {
+                        priority = Integer.parseInt(part.substring("Priority Level=".length()).trim());
+                    } else if (part.startsWith("Due Date=")) {
+                        String dateStr = part.substring("Due Date=".length()).trim();
+                        date = sdf.parse(dateStr);
+                    } else if (part.startsWith("Score=")) {
+                        score = Integer.parseInt(part.substring("Score=".length()).trim());
+                    }
+                }
+
                 Task task = new Task(taskName, date, priority, score);
                 tasks.add(task);
             }
@@ -342,7 +354,6 @@ public class TaskManager {
             e.printStackTrace();
             return false;
         }
-
     }
 
     private boolean writeFile(String filename, Task task) {
