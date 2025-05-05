@@ -99,7 +99,7 @@ public class Controller
         switch (input) 
         {
             case 1: // Task Management
-                System.out.println("Task Menu: \n1. Create Task\n2. Delete Task\n3. Complete Task\n4. Edit Task\n5.Share Task\n6. Import Task\n7. Combine Tasks");
+                System.out.println("Task Menu: \n1. Create Task\n2. Delete Task\n3. Complete Task\n4. Edit Task\n5. Share Task\n6. Import Task\n7. Combine Tasks");
                 int taskChoice = sc.nextInt();
                 sc.nextLine(); 
 
@@ -126,8 +126,6 @@ public class Controller
                     case 2:
                         System.out.println("Enter task name to delete:");
                         String delTask = sc.nextLine();
-
-
 
                         boolean deleted = tm.deleteTask(delTask);
 
@@ -205,7 +203,7 @@ public class Controller
                 break;
 
             case 2: // Project Management
-                System.out.println("Project Menu: \n1. Create Project\n2. Delete Project\n3. Edit Task\n4.Add Task to Project");
+                System.out.println("Project Menu: \n1. Create Project\n2. Delete Project\n3. Edit Project\n4.Add Task to Project");
                 int projChoice = sc.nextInt();
                 sc.nextLine();
 
@@ -246,11 +244,14 @@ public class Controller
                         break;
 
                         case 4: 
-                            System.out.println("Enter the name of the Project you would like to edit.");
+                            System.out.println("Enter the name of the Project you would like to add to.");
                             projectName = sc.nextLine();
 
                             System.out.println("Enter the name of the pre-existing task you would like to add to the project.");
                             taskname = sc.nextLine();
+                            
+                            tempProject = pm.retrieveProject(projectName);
+                            temp = tm.searchTaskName(taskname);
 
                             if (pm.addTaskToProject(taskname, projectName)) {
                                 System.out.println("Task added successfully.");
@@ -300,6 +301,46 @@ public class Controller
                 break;
 
             case 4:
+                int manageAccount = sc.nextInt();
+                String username1;
+                System.out.println("1.Edit Username\n2. Edit Password\n3. Account Summary\n4. Delete Account");
+
+                switch (manageAccount) {
+                    case 1:
+                        System.out.println("Enter your new account username.");
+                        username1 = sc.nextLine();
+
+                        if (am.editAccountUsername(username1)) {
+                            System.out.println("Account username successfully changed.");
+                        }else{
+                            System.out.println("Account username could not be changed.");
+                        }
+                        break;
+                    case 2:
+                        System.out.println("Enter your new account password.");
+                        username1 = sc.nextLine();
+
+                        if (am.editAccountPassword(username1)) {
+                            System.out.println("Account username successfully changed.");
+                        }else{
+                            System.out.println("Account username could not be changed.");
+                        }
+                        
+                        break;
+                    case 3:
+                        System.out.println("Deleting account...");
+
+                        am.deleteAccount(username);
+
+                        System.out.println("Account has been deleted.");
+                        return false;
+
+                    case 4:
+                        am.Summary();
+                        break;
+                    default:
+                        System.out.println("Please enter a valid choice!");
+                }
 
             case 5:
                 am.logout(username);
