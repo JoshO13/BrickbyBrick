@@ -13,8 +13,9 @@ public class TaskManagerTest {
     @Test
     void testCreateTask() throws SQLException {
         TaskManager tm = new TaskManager();
+        Account acc = new Account(null, null);
         Date date = new Date();
-        tm.createTask("test Task", date, 10, 10);
+        tm.createTask("test Task", date, 10, 10, acc);
         List<Task> tasks = tm.getTasks();
         tasks.add(tm.searchTaskName("test Task"));
         for (Task t : tasks) {
