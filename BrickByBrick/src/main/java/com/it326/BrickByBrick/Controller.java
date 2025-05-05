@@ -329,10 +329,16 @@ public class Controller
                     case 3:
                         System.out.println("Deleting account...");
 
-                        am.deleteAccount(username);
+                        boolean delete = am.deleteAccount(username);
 
-                        System.out.println("Account has been deleted.");
-                        return false;
+                        if (delete) {
+                            System.out.println("Account has been deleted.");
+                            return false;
+                        }
+
+                        System.out.println("The account could not be deleted");
+
+                        
 
                     case 4:
                         am.Summary();
