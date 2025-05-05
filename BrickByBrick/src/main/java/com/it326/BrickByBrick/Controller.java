@@ -91,6 +91,7 @@ public class Controller
     {
         String taskname;
         String taskname2;
+        String projectName;
         Task temp;
         Task temp1;
         Scanner sc = new Scanner(System.in);
@@ -98,7 +99,7 @@ public class Controller
         switch (input) 
         {
             case 1: // Task Management
-                System.out.println("Task Menu: \n1. Create Task\n2. Delete Task\n3. Complete Task\n4. Edit Task\n5.Share Task\n6. Import Task");
+                System.out.println("Task Menu: \n1. Create Task\n2. Delete Task\n3. Complete Task\n4. Edit Task\n5.Share Task\n6. Import Task\n7. Combine Tasks");
                 int taskChoice = sc.nextInt();
                 sc.nextLine(); 
 
@@ -204,7 +205,7 @@ public class Controller
                 break;
 
             case 2: // Project Management
-                System.out.println("Project Menu: \n1. Create Project\n2. Delete Project");
+                System.out.println("Project Menu: \n1. Create Project\n2. Delete Project\n3. Edit Task\n4.Add Task to Project");
                 int projChoice = sc.nextInt();
                 sc.nextLine();
 
@@ -231,7 +232,33 @@ public class Controller
                             System.out.println("Project does not exist.");
                         }
                         
+                        case 3:
+                            System.out.println("Enter the name of the project you want to edit.");
+                            projectName = sc.nextLine();
+                            Project tempProject = pm.retrieveProject(projectName);
+
+                            if (tempProject != null) 
+                            {
+                                pm.editProject(tempProject);
+                            }else{
+                                System.out.println("Project could not be found.");
+                            }
                         break;
+
+                        case 4: 
+                            System.out.println("Enter the name of the Project you would like to edit.");
+                            projectName = sc.nextLine();
+
+                            System.out.println("Enter the name of the pre-existing task you would like to add to the project.");
+                            taskname = sc.nextLine();
+
+                            if (pm.addTaskToProject(taskname, projectName)) {
+                                System.out.println("Task added successfully.");
+                            }else{
+                                System.out.println("Task could not be added.");
+                            }
+
+
                     default:
                         System.out.println("Invalid option.");
                 }
@@ -273,6 +300,8 @@ public class Controller
                 break;
 
             case 4:
+
+            case 5:
                 am.logout(username);
                 return false;
                 
