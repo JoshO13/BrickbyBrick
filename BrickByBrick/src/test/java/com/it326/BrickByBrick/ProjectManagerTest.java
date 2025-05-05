@@ -21,4 +21,24 @@ public class ProjectManagerTest {
         List<Project> after = pm.getAllProjects();
         assertTrue(after.isEmpty(), "Project list should be empty after deletion");
     }
+
+
+    @Test
+    void testCreateProject() throws SQLException 
+    {
+        ProjectManager pm = new ProjectManager();
+        Account acc = new Account("testUser", "testPass");
+
+        List<Project> before = pm.getAllProjects();
+        assertTrue(before.isEmpty(), "Project list should be empty before creation");
+
+        boolean created = pm.createProject("testProject", acc);
+        assertTrue(created, "createProject should return true");
+
+        List<Project> after = pm.getAllProjects();
+        assertEquals(1, after.size(), "Project list should have one project after creation");
+        assertEquals("testProject", after.get(0).getName(), "Created project name should match");
+}
+
+
 }
