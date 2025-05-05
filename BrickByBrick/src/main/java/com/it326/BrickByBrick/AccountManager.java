@@ -158,7 +158,7 @@ public class AccountManager implements Manager<Account> {
         if (this.account == null) {
             return false;
         }
-        String sql = "UPDATE account SET password = ? WHERE username = ?";
+        String sql = "UPDATE account SET password1 = ? WHERE username = ?";
         try (Connection conn = database.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, newPassword);
             statement.setString(2, this.account.getLogin());
